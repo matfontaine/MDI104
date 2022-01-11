@@ -1,0 +1,2333 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>M2-ATIAM-Audio_source_separation</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/telecom.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/github.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section class="cover" data-background="figures/background-blur.jpg"  data-state="no-title-footer no-progressbar has-dark-background">
+
+					<h2 id='coverh2'>Audio Source Separation</h2>
+					<h1  id='title_seminar'>Projets et applications musicales (PAM), Master ATIAM </h1>
+					<h3><a href="https://matfontaine.github.io", id='github_url'>matfontaine.github.io</a></h3>
+					<p id='coverauthors'>
+						Mathieu FONTAINE<br />
+						mathieu.fontaine@telecom-paris.fr
+					</p>
+					<p id="date">
+					January 12nd, 2022
+					</p>
+					<p>
+					<img src="css/theme/img/logo-Telecom.svg" id="telecom" class="logo" alt="">
+					<aside class="notes">
+						<ul><li>We will consider historical audio source separation technique</li>
+									<li>e.g. no deep learning extensions or nonnegative matrix factorization</li>
+								<li>the Handbook for that course is available on the moodle (PAM/Audio_source_separation)</li>
+						</ul>
+					</aside>
+				</section>
+
+				<!-- Outline of the presentation -->
+				<section>
+					<h2>Outline</h2>
+						<h3> I - Introduction</h3>
+						<h3> II - Mathematical reminders</h3>
+						<h3> III - Linear instantaneous mixtures</h3>
+						<h3> IV - Independent component analysis</h3>
+						<h3> V - Second order methods </h3>
+						<h3> VI - Time-frequency methods </h3>
+						<h3> VII- Convolutive mixtures </h3>
+						<h3> VIII- Under-determined mixtures </h3>
+						<h3> IX - Conclusion </h3>
+				</section>
+				<!-- Introduction -->
+				<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+					<h2 id='coverh2'>I - Introduction</h2>
+				</section>
+
+				<section>
+					<h2>Source separation</h2>
+
+					<ul><li>Art of estimating "source" signals, assumed independent, from the observation
+					of one or several "mixtures" of these sources</li></ul>
+					<h2>Applications examples</h2>
+				</section>
+
+				<section>
+					<h2>Source separation</h2>
+
+					<ul>
+						<li>Art of estimating "source" signals, assumed independent, from the observation
+					of one or several "mixtures" of these sources</li>
+				 </ul>
+					<h2>Applications examples</h2>
+					<ul>
+						<li>Denoising (cocktail party, suppression of vuvuzela, karaoke)
+						<div class="multiCol" style="margin-top:0.1em">
+							<div class="col">
+								<label for="no_sp">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp noisy speech<br>
+								</label>
+									<audio id="no_sp" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/no_sp.wav"/>
+										</audio>
+										<label for="multi_sp">
+										<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp	multi speeech<br>
+										</label>
+											<audio id="multi_sp" controls>
+											<source
+													type="audio/mpeg"
+													src="multimedia/audio/multi_sp.wav"/>
+												</audio>
+							</div>
+							<div class="col">
+								<label for="cl_sp">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbspclean speech<br>
+								</label>
+									<audio id="cl_sp" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/cl_sp.wav"/>
+										</audio>
+										<label for="one_sp">
+										<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp	one speeech<br>
+										</label>
+											<audio id="one_sp" controls>
+											<source
+													type="audio/mpeg"
+													src="multimedia/audio/one_sp.wav"/>
+												</audio>
+							</div></li>
+						</ul>
+						<!-- <li>Separation of the instruments in polyphonic music
+						<div class="multiCol" style="margin-top:-0.1em">
+							<div class="col">
+								<label for="mix">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp song<br>
+								</label>
+									<audio id="mix" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/mixture.wav"/>
+										</audio>
+							</div>
+							<div class="col">
+								<label for="drums">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp drums<br>
+								</label>
+									<audio id="drums" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/drums.wav"/>
+										</audio>
+							</div>
+							<div class="col">
+								<label for="vocals">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp vocals<br>
+								</label>
+									<audio id="vocals" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/vocals.wav"/>
+										</audio>
+							</div>
+							<div class="col">
+								<label for="bass">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp bass<br>
+								</label>
+									<audio id="bass" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/bass.wav"/>
+										</audio>
+							</div>
+						</li>
+						<li>Remix, transformations, re-spatialization</li>
+				 </ul> -->
+
+				</section>
+
+				<section>
+					<h2>Source separation</h2>
+
+					<ul>
+						<li>Art of estimating "source" signals, assumed independent, from the observation
+					of one or several "mixtures" of these sources</li>
+				 </ul>
+					<h2>Applications examples</h2>
+					<ul>
+						<li>Denoising (cocktail party, suppression of vuvuzela, karaoke)
+						<div class="multiCol" style="margin-top:0.1em">
+							<div class="col">
+								<label for="no_sp">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp noisy speech<br>
+								</label>
+									<audio id="no_sp" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/no_sp.wav"/>
+										</audio>
+										<label for="multi_sp">
+										<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp	multi speeech<br>
+										</label>
+											<audio id="multi_sp" controls>
+											<source
+													type="audio/mpeg"
+													src="multimedia/audio/multi_sp.wav"/>
+												</audio>
+							</div>
+							<div class="col">
+								<label for="cl_sp">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbspclean speech<br>
+								</label>
+									<audio id="cl_sp" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/cl_sp.wav"/>
+										</audio>
+										<label for="one_sp">
+										<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp	one speeech<br>
+										</label>
+											<audio id="one_sp" controls>
+											<source
+													type="audio/mpeg"
+													src="multimedia/audio/one_sp.wav"/>
+												</audio>
+							</div></li>
+						<li>Separation of the instruments in polyphonic music
+						<div class="multiCol" style="margin-top:-0.1em">
+							<div class="col">
+								<label for="mix">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp song<br>
+								</label>
+									<audio id="mix" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/mixture.wav"/>
+										</audio>
+											<label for="drums">
+											<br>&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp drums<br>
+											</label>
+												<audio id="drums" controls>
+												<source
+														type="audio/mpeg"
+														src="multimedia/audio/drums.wav"/>
+													</audio>
+
+							</div>
+							<div class="col">
+								<label for="vocals">
+								&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp vocals<br>
+								</label>
+									<audio id="vocals" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/vocals.wav"/>
+										</audio>
+								<label for="bass">
+								<br>&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp	&nbsp&nbsp&nbsp&nbsp bass<br>
+								</label>
+									<audio id="bass" controls>
+									<source
+											type="audio/mpeg"
+											src="multimedia/audio/bass.wav"/>
+										</audio>
+							</div>
+						</li>
+				 </ul>
+				 <aside class="notes">
+					 <ul><li>Also pitch shifting or time-scaling</li>
+						 <li>respatialization etc.</li>
+					 </ul>
+				 </aside>
+				</section>
+
+
+	<section>
+					<h2>Typology of the mixture models (1/2)</h2>
+
+						<h3 style='margin-top:0.5em;'>Definition of the problem</h3>
+						<ul>
+							<li>
+								Observations: $M$ mixtures $x_m(t)$ concatenated in a vector $\bold{x}(t)$
+							</li>
+							<li>
+								Unknowns: $K$ sources $s_k(t)$ concatenated in a vector $\bold{s}(t)$
+							</li>
+							<li>
+								General mixture model: function $\mathcal{A}$ which transforms $\bold{s}(t)$ into $\bold{x}(t)$
+							</li>
+						</ul>
+
+						<h3 style='margin-top:0.5em;'>Property typology</h3>
+						<!-- <ul>
+							<li>Stationarity: $\mathcal{A}$ is translation invariant</li>
+							<li>Linearity: $\mathcal{A}$ is a linear map</li>
+						</ul>
+
+						<h3 style='margin-top:0.5em;'>Memory</h3>
+						<ul>
+							<li>Convolutive mixtures</li>
+							<li>Instantaneous mixtures: $\bold{x}(t)=\bold{A}\bold{s}(t) \\
+								\quad\rightarrow \mathcal{A}$ is defined by the "mixture matrix"
+								 $\bold{A}$ (of dimension $M\times K$)
+							</li>
+
+						</ul> -->
+						<aside class="notes">
+							<ul><li>$\bold{x}(t)=[x_1(t),\dots,x_M(t)]^\top$</li>
+								<li>respatialization etc.</li>
+							</ul>
+						</aside>
+</section>
+
+<section>
+				<h2>Typology of the mixture models (1/2)</h2>
+
+					<h3 style='margin-top:0.5em;'>Definition of the problem</h3>
+					<ul>
+						<li>
+							Observations: $M$ mixtures $x_m(t)$ concatenated in a vector $\bold{x}(t)$
+						</li>
+						<li>
+							Unknowns: $K$ sources $s_k(t)$ concatenated in a vector $\bold{s}(t)$
+						</li>
+						<li>
+							General mixture model: function $\mathcal{A}$ which transforms $\bold{s}(t)$ into $\bold{x}(t)$
+						</li>
+					</ul>
+
+					<h3 style='margin-top:0.5em;'>Property typology</h3>
+					<ul>
+						<li>Stationarity: $\mathcal{A}$ is translation invariant</li>
+						<li>Linearity: $\mathcal{A}$ is a linear map</li>
+					</ul>
+
+					<h3 style='margin-top:0.5em;'>Memory</h3>
+					<!-- <ul>
+						<li>Convolutive mixtures</li>
+						<li>Instantaneous mixtures: $\bold{x}(t)=\bold{A}\bold{s}(t) \\
+							\quad\rightarrow \mathcal{A}$ is defined by the "mixture matrix"
+							 $\bold{A}$ (of dimension $M\times K$)
+						</li>
+
+					</ul> -->
+					<aside class="notes">
+						<ul><li>stationnary+ linear -> convolution product</li>
+							<li>length of the impulse response: this is the memory</li>
+						</ul>
+					</aside>
+</section>
+
+<section>
+				<h2>Typology of the mixture models (1/2)</h2>
+
+					<h3 style='margin-top:0.5em;'>Definition of the problem</h3>
+					<ul>
+						<li>
+							Observations: $M$ mixtures $x_m(t)$ concatenated in a vector $\bold{x}(t)$
+						</li>
+						<li>
+							Unknowns: $K$ sources $s_k(t)$ concatenated in a vector $\bold{s}(t)$
+						</li>
+						<li>
+							General mixture model: function $\mathcal{A}$ which transforms $\bold{s}(t)$ into $\bold{x}(t)$
+						</li>
+					</ul>
+
+					<h3 style='margin-top:0.5em;'>Property typology</h3>
+					<ul>
+						<li>Stationarity: $\mathcal{A}$ is translation invariant</li>
+						<li>Linearity: $\mathcal{A}$ is a linear map</li>
+					</ul>
+
+					<h3 style='margin-top:0.5em;'>Memory</h3>
+					<ul>
+						<li>Convolutive mixtures</li>
+						<li>Instantaneous mixtures: $\bold{x}(t)=\bold{A}\bold{s}(t) \\
+							\quad\rightarrow \mathcal{A}$ is defined by the "mixture matrix"
+							 $\bold{A}$ (of dimension $M\times K$)
+						</li>
+
+					</ul>
+					<aside class="notes">
+						<ul><li>stationnary+ linear -> convolution product</li>
+							<li>length of the impulse response: this is the memory</li>
+							<li>memory length equal to zero : instantaneous mixtures (IM)</li>
+							<li>IM works well in general for EEG of MEG</li>
+							<li>Problematic for audio application because of the reverberation</li>
+						</ul>
+					</aside>
+</section>
+
+<section>
+				<h2>Typology of the mixture models (2/2)</h2>
+
+					<h3 style='margin-top:0.5em;'>Inversibility</h3>
+					<ul>
+						<li>
+							Determined mixtures: $M=K$
+						</li>
+						<li>
+							Overdetermined mixtures: $M>K$
+						</li>
+						<li>
+							Under-determined mixtures: $M < K$
+						</li>
+					</ul>
+					<aside class="notes">
+						<ul><li>$M=K$ it ise generally invertible</li>
+							<li>$M> K$: a unique solution can be found in the least squares sense</li>
+							<li>$M> K$: infinite number of solution : we need more informations</li>
+						</ul>
+					</aside>
+</section>
+
+<section>
+				<h2>Instantaneous linear mixtures</h2>
+				<img src="figures/instantane.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=100%>
+				<aside class="notes">
+					<ul><li>(a) : LR oriented at 90 degree< and approximate a ILM</li>
+						<li> it is never perfectly instantaneous</li>
+						<li>(b): can be created artificially by using a mixing deck of a computer</li>
+					</ul>
+				</aside>
+</section>
+
+<section>
+				<h2>Anechoic linear mixtures</h2>
+				<img src="figures/anechoique.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=60%>
+				<aside class="notes">
+					<ul><li>can be recorded in an anechoic chamber</li>
+						<li>every impulse response is formed only of a single pulse</li>
+						<li>the pulse is characterized by its delay and its magnitude</li>
+					</ul>
+				</aside>
+
+</section>
+
+<section>
+				<h2>Convolutive linear mixtures</h2>
+				<img src="figures/convolutive.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=100%>
+				<aside class="notes">
+					<ul><li>general case: the impulse response is formed of infinitely many pulses</li>
+						<li>every impulse response is formed only of a single pulse</li>
+						<li>the pulse is characterized by its delay and its magnitude</li>
+						<li>We can also simulate a 3D stereo sound sensation for the listener using headphones</li>
+					</ul>
+				</aside>
+
+</section>
+
+	<!-- Mathematical reminders -->
+	<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+		<h2 id='coverh2'>II - Mathematical reminders</h2>
+		<aside class="notes">
+			<ul><li>many source separation techniques involve probabilistic models</li>
+				<li>let's introduce some notations</li>
+			</ul>
+		</aside>
+	</section>
+
+	<section>
+
+ 	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.</br>
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<!-- <li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li> -->
+	</ul>
+	</section>
+
+	<section>
+
+ 	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.</br>
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<!-- <li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li> -->
+	</ul>
+	</section>
+
+	<section>
+
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<!-- <li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li> -->
+	</ul>
+	<aside class="notes">
+		<ul><li> Covariance always positive semi-definite and symmetric</li>
+		</ul>
+	</aside>
+	</section>
+
+	<section>
+
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<!-- <li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li> -->
+	</ul>
+	</section>
+
+	<section>
+
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li>
+	</ul>
+	<aside class="notes">
+		<ul><li> Covariance always positive semi-definite and symmetric</li>
+			<li> inverse Fourier transform of the chf is a measurable function we get the PDF </li>
+		</ul>
+	</aside>
+		<h3 style='margin-top:0.5em;'>Cumulants</h3>
+	</section>
+
+	<section>
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li>
+	</ul>
+			<h3 style='margin-top:0.5em;'>Cumulants</h3>
+			<ul>
+				<li style='margin-top:-0.8em;'>Definition: $
+					\ln\left(\phi_x(\bold{f})\right) =
+					 \sum\limits_{n=1}^{+\infty}\frac{(-2i\pi)^n}{n!}\sum\limits_{k_1=1}^M\dots\sum\limits_{k_n=1}^M
+					 \kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]f_{k_1}\dots f_{k_n}$</li>
+				<!-- <li>$\kappa^n[\bold{x}]$ is an $n^{\mathrm{th}}$ order tensor of coefficients $\kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]$</li>
+				<li>$\kappa^1[\bold{x}]$ is the mean vector, $\kappa^2[\bold{x}]$ is the covariance matrix</li>
+				<li> $p(\bold{x})$ symmetric $\implies$ $\kappa^{n}[\bold{x}]=0, \forall n~ \mathrm{odd}$</li>
+				<li>The ratio $\kappa^4_{k,k,k,k}[\bold{x}]/\kappa^2_{k,k}[\bold{x}]$ is called the "kurtosis"</li> -->
+			</ul>
+			<aside class="notes">
+				<ul><li> oldest source separation methods are based on that notion</li>
+					<li> inverse Fourier transform of the chf is a measurable function we get the PDF </li>
+					<li> coefficients of the Taylor expansion of the cumulant generating function</li>
+				</ul>
+			</aside>
+	</section>
+
+	<section>
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li>
+	</ul>
+			<h3 style='margin-top:0.5em;'>Cumulants</h3>
+			<ul>
+				<li style='margin-top:-0.8em;'>Definition: $
+					\ln\left(\phi_x(\bold{f})\right) =
+					 \sum\limits_{n=1}^{+\infty}\frac{(-2i\pi)^n}{n!}\sum\limits_{k_1=1}^M\dots\sum\limits_{k_n=1}^M
+					 \kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]f_{k_1}\dots f_{k_n}$</li>
+				<li>$\kappa^n[\bold{x}]$ is an $n^{\mathrm{th}}$ order tensor of coefficients $\kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]$</li>
+				<li>$\kappa^1[\bold{x}]$ is the mean vector, $\kappa^2[\bold{x}]$ is the covariance matrix</li>
+				<!-- <li> $p(\bold{x})$ symmetric $\implies$ $\kappa^{n}[\bold{x}]=0, \forall n~ \mathrm{odd}$</li>
+				<li>The ratio $\kappa^4_{k,k,k,k}[\bold{x}]/\kappa^2_{k,k}[\bold{x}]$ is called the "kurtosis"</li> -->
+			</ul>
+	</section>
+
+	<section>
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li>
+	</ul>
+			<h3 style='margin-top:0.5em;'>Cumulants</h3>
+			<ul>
+				<li style='margin-top:-0.8em;'>Definition: $
+					\ln\left(\phi_x(\bold{f})\right) =
+					 \sum\limits_{n=1}^{+\infty}\frac{(-2i\pi)^n}{n!}\sum\limits_{k_1=1}^M\dots\sum\limits_{k_n=1}^M
+					 \kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]f_{k_1}\dots f_{k_n}$</li>
+				<li>$\kappa^n[\bold{x}]$ is an $n^{\mathrm{th}}$ order tensor of coefficients $\kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]$</li>
+				<li>$\kappa^1[\bold{x}]$ is the mean vector, $\kappa^2[\bold{x}]$ is the covariance matrix</li>
+				<li> $p(\bold{x})$ symmetric $\implies$ $\kappa^{n}[\bold{x}]=0, \forall n~ \mathrm{odd}$</li>
+				<!-- <li>The ratio $\kappa^4_{k,k,k,k}[\bold{x}]/\kappa^2_{k,k}[\bold{x}]$ is called the "kurtosis"</li> -->
+			</ul>
+	</section>
+
+	<section>
+	<h2>Real random vectors</h2>
+	<h3 style='margin-top:0.5em;'>Notations</h3>
+	$\bold{x}$ is a random vector of dimension $M$.
+	<ul>
+		<li>$\phi[\bold{x}]$ denotes a function of $p(\bold{x})$</li>
+		<li>Mean: $\mu_{x}=\mathbb{E}[\bold{x}]$</li>
+		<li>Covariance matrix: $\Sigma_{xx}=\mathbb{E}[(\bold{x}-\mu_x)(\bold{x}-\mu_x)^\top]$</li>
+		<li>Characteristic function: $\phi_{x}(\bold{f})=\mathbb{E}[e^{-2i\pi\bold{f}^\top\bold{x}}]=\int_{\mathbb{R}^M}p(\bold{x})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{x}$</li>
+		<li>Probability density function: $p(\bold{x})=\int_{\mathbb{R}^M}\phi_{x}(\bold{f})e^{-2i\pi\bold{f}^\top\bold{x}}d\bold{f}$</li>
+	</ul>
+			<h3 style='margin-top:0.5em;'>Cumulants</h3>
+			<ul>
+				<li style='margin-top:-0.8em;'>Definition: $
+					\ln\left(\phi_x(\bold{f})\right) =
+					 \sum\limits_{n=1}^{+\infty}\frac{(-2i\pi)^n}{n!}\sum\limits_{k_1=1}^M\dots\sum\limits_{k_n=1}^M
+					 \kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]f_{k_1}\dots f_{k_n}$</li>
+				<li>$\kappa^n[\bold{x}]$ is an $n^{\mathrm{th}}$ order tensor of coefficients $\kappa^{n}_{k_{1}\dots k_{n}}[\bold{x}]$</li>
+				<li>$\kappa^1[\bold{x}]$ is the mean vector, $\kappa^2[\bold{x}]$ is the covariance matrix</li>
+				<li> $p(\bold{x})$ symmetric $\implies$ $\kappa^{n}[\bold{x}]=0, \forall n~ \mathrm{odd}$</li>
+				<li>The ratio $\kappa^4_{k,k,k,k}[\bold{x}]/\kappa^2_{k,k}[\bold{x}]$ is called the "kurtosis"</li>
+			</ul>
+	</section>
+
+	<section>
+	<h2>Real Gaussian random vector</h2>
+	<ul>
+		<li> The Gaussian is the one such that all cumulants of order $n>2$ are zero</li>
+		<!-- <li>Characteristic function
+		<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+		\phi_x(\bold{f})=\exp(-2i\pi\bold{f}^\top\mu_x-2\pi^2\bold{f}^\top\Sigma_{xx}\bold{f})
+		$$</center>
+	</li>
+		<li>Probability density function (defined if $\Sigma_{xx}$ is invertible)
+			<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+			p(\bold{x})=\frac{1}{(2\pi)^{\frac{M}{2}}\det(\Sigma_{xx})^{\frac{1}{2}}}
+			\exp(-\frac{1}{2}(\bold{x}-\mu_x)^\top\Sigma_{xx}^{-1}(\bold{x}-\mu_x))
+			$$</center>
+		</li> -->
+
+
+	</section>
+
+	<section>
+	<h2>Real Gaussian random vector</h2>
+	<ul>
+		<li> The Gaussian is the one such that all cumulants of order $n>2$ are zero</li>
+		<li>Characteristic function
+		<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+		\phi_x(\bold{f})=\exp(-2i\pi\bold{f}^\top\mu_x-2\pi^2\bold{f}^\top\Sigma_{xx}\bold{f})
+		$$</center>
+	</li>
+		<!-- <li>Probability density function (defined if $\Sigma_{xx}$ is invertible)
+			<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+			p(\bold{x})=\frac{1}{(2\pi)^{\frac{M}{2}}\det(\Sigma_{xx})^{\frac{1}{2}}}
+			\exp(-\frac{1}{2}(\bold{x}-\mu_x)^\top\Sigma_{xx}^{-1}(\bold{x}-\mu_x))
+			$$</center>
+		</li> -->
+
+
+	</section>
+
+	<section>
+	<h2>Real Gaussian random vector</h2>
+	<ul>
+		<li> The Gaussian is the one such that all cumulants of order $n>2$ are zero</li>
+		<li>Characteristic function
+		<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+		\phi_x(\bold{f})=\exp(-2i\pi\bold{f}^\top\mu_x-2\pi^2\bold{f}^\top\Sigma_{xx}\bold{f})
+		$$</center>
+	</li>
+		<li>Probability density function (defined if $\Sigma_{xx}$ is invertible)
+			<center style="margin-top:0.3em; margin-bottom:0.3em;">$$
+			p(\bold{x})=\frac{1}{(2\pi)^{\frac{M}{2}}\det(\Sigma_{xx})^{\frac{1}{2}}}
+			\exp(-\frac{1}{2}(\bold{x}-\mu_x)^\top\Sigma_{xx}^{-1}(\bold{x}-\mu_x))
+			$$</center>
+		</li>
+	</section>
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<!-- <ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+	  </li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+  </ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+		Definition: $\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau}$
+		</li>
+		<li>
+			Property: $\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li>
+	</ul> -->
+	<aside class="notes">
+		<ul><li> We assume that the second order moment of studied VP exists and are finite</li>
+		</ul>
+	</aside>
+	</section>
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+	  <!-- </li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+  </ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+		Definition: $\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau}$
+		</li>
+		<li>
+			Property: $\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li> -->
+	</ul>
+	</section>
+
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+		</li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<!-- <li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+		Definition: $\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau}$
+		</li>
+		<li>
+			Property: $\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li> -->
+	</ul>
+	<aside class="notes">
+		<ul><li> We assume that the second order moment of studied VP exists and are finite</li>
+			<li> Note that $x$ and $y$ could have different size</li>
+		</ul>
+	</aside>
+	</section>
+
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+		</li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+	<!-- </ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+		Definition: $\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau}$
+		</li>
+		<li>
+			Property: $\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li> -->
+	</ul>
+	</section>
+
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+		</li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+$\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau} \quad \texttt{(PSD)}$
+		</li>
+		<!-- <li>
+			Property: $\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li> -->
+	</ul>
+
+	<aside class="notes">
+		<ul><li> We assume that the second order moment of studied VP exists and are finite</li>
+			<li> Note that $x$ and $y$ could have different size</li>
+			<li> When the DTFT of the autocovriance function of a WSS-VP is a measurable function</li>
+			<li> PSD is periodic of period one</li>
+		</ul>
+	</aside>
+	</section>
+
+
+	<section>
+	<h2>Wide-sense stationnary vector processes (WSS-VP)</h2>
+	<h3 style='margin-top:0.5em;'>Definition & Properties</h3>
+	<ul>
+		<li>
+		$\bold{x}:=\{\bold{x}(t)\}_{t\in\mathbb{Z}}$ WSS-VP $\Leftrightarrow$
+		$$
+		\begin{cases}
+		\forall t,\quad~~ \mathbb{E}[\bold{x}(t)] = \mu_{x} \\
+		\forall t,\tau,~~ \mathbb{E}[(\bold{x}(t+\tau) - \mu_x)(\bold{x}(t) - \mu_x)^\top] = \bold{R}_{xx}(\tau)~~~ \texttt{(autocovariance function)}
+		\end{cases}$$
+		</li>
+		<li>
+			$\bold{x}, \bold{y}$ centered WSS-VP, $\bold{R}_{xy}(\tau) = \mathbb[\bold{x}(t+\tau)\bold{y}(t)^\top] \quad\texttt{(intercovariance function)}$
+		</li>
+		<li>
+			$R_{xx}(0)=\Sigma_{xx}$ is Hermitian and positive semi-definite.
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Power spectral density (PSD) of a WSS-VP $\bold{x}$</h3>
+	<ul>
+		<li>
+		$\bold{S}_{xx}(\nu)= \sum\limits_{\tau\in\mathbb{Z}}\bold{R}_{xx}(\tau)e^{-2i\pi\nu\tau} \quad \texttt{(PSD)}$
+		</li>
+		<li>
+			$\forall \nu, \bold{S}_{xx}(\nu)$ is Hermitian and positive semi-definite
+		</li>
+	</ul>
+	<aside class="notes">
+		<ul><li> We assume that the second order moment of studied VP exists and are finite</li>
+			<li> Note that $x$ and $y$ could have different size</li>
+			<li> When the DTFT of the autocovriance function of a WSS-VP is a measurable function</li>
+			<li> PSD is periodic of period one</li>
+		</ul>
+	</aside>
+	</section>
+
+	<section>
+	<h2>Information Theory</h2>
+	<h3 style='margin-top:0.5em;'>Shannon entropy</h3>
+	<!-- <ul>
+		<li>
+		$\mathbb{H}[\bold{x}] = -\mathbb{E}[\ln(p(\bold{x}))]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\texttt{(Shannon entropy)}$
+		</li>
+		<li>
+			$\mathbb{H}[\bold{x}]$ is not necessarily non-negative for a continuous random vector
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Kullback-Leibler (KL) divergence</h3>
+	<ul>
+		<li>
+		$D_{KL}(p\mid\mid q) = \int p(\bold{x})\ln(\frac{p(\bold{x})}{q(\bold{x})})d\bold{x}~~~~~~~~~~~~~~\texttt{(KL-Divergence)}$
+		</li>
+		<li>
+		$D_{KL}(p\mid\mid q) \geq 0, ~ D_{KL}(p\mid\mid q) = 0 ~ \mathrm{iff.} ~ p=q$
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Mutual Information</h3>
+	<ul>
+		<li>
+		$\mathbb{I}[\bold{x}]=D_{KL}(p(\bold{x})\mid\mid p(x_1)\dots p(x_M))~~~~~~\texttt{(Mutual Information)}$
+		</li>
+		<li>
+		$\mathbb{I}[\bold{x}]=0 ~\mathrm{iff.}~ x_1,\dots,x_M$ are mutually independent
+		</li>
+		<li>
+				$\mathbb{I}[\bold{x}]=\sum\limits_{m=1}^{M}\mathbb{H}[x_m]-\mathbb{H}[\bold{x}]$
+		</li>
+	</ul> -->
+	<aside class="notes">
+		<ul><li> measure the amount of information shared between several random variables</li>
+		</ul>
+	</aside>
+	</section>
+
+	<section>
+	<h2>Information Theory</h2>
+	<h3 style='margin-top:0.5em;'>Shannon entropy</h3>
+	<ul>
+		<li>
+		$\mathbb{H}[\bold{x}] = -\mathbb{E}[\ln(p(\bold{x}))]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\texttt{(Shannon entropy)}$
+		</li>
+		<li>
+			$\mathbb{H}[\bold{x}]$ is not necessarily non-negative for a continuous random vector
+		</li>
+	</ul>
+	<!-- <h3 style='margin-top:0.5em;'>Kullback-Leibler (KL) divergence</h3> -->
+	<!-- <ul>
+		<li>
+		$D_{KL}(p\mid\mid q) = \int p(\bold{x})\ln(\frac{p(\bold{x})}{q(\bold{x})})d\bold{x}~~~~~~~~~~~~~~\texttt{(KL-Divergence)}$
+		</li>
+		<li>
+		$D_{KL}(p\mid\mid q) \geq 0, ~ D_{KL}(p\mid\mid q) = 0 ~ \mathrm{iff.} ~ p=q$
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Mutual Information</h3>
+	<ul>
+		<li>
+		$\mathbb{I}[\bold{x}]=D_{KL}(p(\bold{x})\mid\mid p(x_1)\dots p(x_M))~~~~~~\texttt{(Mutual Information)}$
+		</li>
+		<li>
+		$\mathbb{I}[\bold{x}]=0 ~\mathrm{iff.}~ x_1,\dots,x_M$ are mutually independent
+		</li>
+		<li>
+				$\mathbb{I}[\bold{x}]=\sum\limits_{m=1}^{M}\mathbb{H}[x_m]-\mathbb{H}[\bold{x}]$
+		</li>
+	</ul> -->
+	<aside class="notes">
+		<ul><li> measure the amount of information shared between several random variables</li>
+<li> measure the degree of uncertaintly in a probability distribution</li>
+		</ul>
+	</aside>
+	</section>
+
+	<section>
+	<h2>Information Theory</h2>
+	<h3 style='margin-top:0.5em;'>Shannon entropy</h3>
+	<ul>
+		<li>
+		$\mathbb{H}[\bold{x}] = -\mathbb{E}[\ln(p(\bold{x}))]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\texttt{(Shannon entropy)}$
+		</li>
+		<li>
+			$\mathbb{H}[\bold{x}]$ is not necessarily non-negative for a continuous random vector
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Kullback-Leibler (KL) divergence</h3>
+	<ul>
+		<li>
+		$D_{KL}(p\mid\mid q) = \int p(\bold{x})\ln(\frac{p(\bold{x})}{q(\bold{x})})d\bold{x}~~~~~~~~~~~~~~\texttt{(KL-Divergence)}$
+		</li>
+		<li>
+		$D_{KL}(p\mid\mid q) \geq 0, ~ D_{KL}(p\mid\mid q) = 0 ~ \mathrm{iff.} ~ p=q$
+		</li>
+	</ul>
+	<!-- <h3 style='margin-top:0.5em;'>Mutual Information</h3>
+	<ul>
+		<li>
+		$\mathbb{I}[\bold{x}]=D_{KL}(p(\bold{x})\mid\mid p(x_1)\dots p(x_M))~~~~~~\texttt{(Mutual Information)}$
+		</li>
+		<li>
+		$\mathbb{I}[\bold{x}]=0 ~\mathrm{iff.}~ x_1,\dots,x_M$ are mutually independent
+		</li>
+		<li>
+				$\mathbb{I}[\bold{x}]=\sum\limits_{m=1}^{M}\mathbb{H}[x_m]-\mathbb{H}[\bold{x}]$
+		</li>
+	</ul> -->
+	<aside class="notes">
+		<ul><li> measure the amount of information shared between several random variables</li>
+<li> measure the degree of uncertaintly in a probability distribution</li>
+<li> KL: measure the degree of dissimilarity between two PDF</li>
+<li> KL: not a distance triangle inequality and D(p|q)  \neq D(q|p)</li>
+		</ul>
+	</aside>
+	</section>
+
+
+	<section>
+	<h2>Information Theory</h2>
+	<h3 style='margin-top:0.5em;'>Shannon entropy</h3>
+	<ul>
+		<li>
+		$\mathbb{H}[\bold{x}] = -\mathbb{E}[\ln(p(\bold{x}))]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\texttt{(Shannon entropy)}$
+		</li>
+		<li>
+			$\mathbb{H}[\bold{x}]$ is not necessarily non-negative for a continuous random vector
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Kullback-Leibler (KL) divergence</h3>
+	<ul>
+		<li>
+		$D_{KL}(p\mid\mid q) = \int p(\bold{x})\ln(\frac{p(\bold{x})}{q(\bold{x})})d\bold{x}~~~~~~~~~~~~~~\texttt{(KL-Divergence)}$
+		</li>
+		<li>
+		$D_{KL}(p\mid\mid q) \geq 0, ~ D_{KL}(p\mid\mid q) = 0 ~ \mathrm{iff.} ~ p=q$
+		</li>
+	</ul>
+	<h3 style='margin-top:0.5em;'>Mutual Information</h3>
+	<ul>
+		<li>
+		$\mathbb{I}[\bold{x}]=D_{KL}(p(\bold{x})\mid\mid p(x_1)\dots p(x_M))~~~~~~\texttt{(Mutual Information)}$
+		</li>
+		<li>
+		$\mathbb{I}[\bold{x}]=0 ~\mathrm{iff.}~ x_1,\dots,x_M$ are mutually independent
+		</li>
+		<li>
+				$\mathbb{I}[\bold{x}]=\sum\limits_{m=1}^{M}\mathbb{H}[x_m]-\mathbb{H}[\bold{x}]$
+		</li>
+	</ul>
+
+	<aside class="notes">
+		<ul><li> measure the amount of information shared between several random variables</li>
+<li> measure the degree of uncertaintly in a probability distribution</li>
+<li> KL: measure the degree of dissimilarity between two PDF</li>
+<li> KL: not a distance triangle inequality and D(p|q)  \neq D(q|p)</li>
+<li> Mutual information: measure mutual dependence between several random variables</li>
+<li> In ICA, we aim to minimize the mutual information</li>
+		</ul>
+	</aside>
+	</section>
+
+
+	<!-- alpha-FastMNMF-->
+	<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+		<h2 id='coverh2'>III - Linear instantaneous mixtures</h2>
+
+		<aside class="notes">
+			<ul><li> first audio source separation technique</li>
+	<li> they paved the way for more complex audio source separation methods</li>
+	<li> We can introduce several concepts useful later</li>
+			</ul>
+		</aside>
+	</section>
+
+
+
+ <section>
+	<h2>Blind source separation (BSS) (1/2)</h2>
+	<h3 style='margin-top:0.5em;'>Observation model</h3>
+	<ul>
+		<li> Linear instantaneous mixture model:
+			<center>$$\forall t, \bold{x}(t)=\bold{A}\bold{s}(t)$$</center>
+			$\quad\rightarrow\bold{A}\in\mathbb{R}^{M\times K}$: "mixing matrix"
+		</li>
+		<li>
+			Sources are assumed IID:
+			<center>$$p(\{s_k(t)\}_{k,t})=\prod\limits_{k=1}^{K}\prod\limits_{t=1}^{T}p_k(s_k(t))$$</center>
+		</li>
+	</ul>
+	<!-- <div class="question" style='margin-top:0.5em;'> BSS problem: estimate $\bold{A}$ and sources $\bold{s}(t)$ given $\bold{x}(t)$ </div> -->
+	<aside class="notes">
+		<ul><li> BSS: we know very little about the sources</li>
+			<li>just assumed to be statistically independent</li>
+			<li>e.g. denoising application the background environmental noise and speaker are in general independent</li>
+<li>IID assumption:ignore power variation over time or spectral dynamics</li>
+		</ul>
+	</aside>
+
+ </section>
+
+ <section>
+	<h2>Blind source separation (BSS) (1/2)</h2>
+	<h3 style='margin-top:0.5em;'>Observation model</h3>
+	<ul>
+		<li> Linear instantaneous mixture model:
+			<center>$$\forall t, \bold{x}(t)=\bold{A}\bold{s}(t)$$</center>
+			$\quad\rightarrow\bold{A}\in\mathbb{R}^{M\times K}$: "mixing matrix"
+		</li>
+		<li>
+			Sources are assumed IID:
+			<center>$$p(\{s_k(t)\}_{k,t})=\prod\limits_{k=1}^{K}\prod\limits_{t=1}^{T}p_k(s_k(t))$$</center>
+		</li>
+	</ul>
+	<div class="question" style='margin-top:0.5em;'> BSS problem: estimate $\bold{A}$ and sources $\bold{s}(t)$ given $\bold{x}(t)$ </div>
+	<aside class="notes">
+		<ul><li> BSS: we know very little about the sources</li>
+			<li>just assumed to be statistically independent</li>
+			<li>e.g. denoising application the background environmental noise and speaker are in general independent</li>
+<li>IID assumption:ignore power variation over time or spectral dynamics</li>
+		</ul>
+	</aside>
+
+ </section>
+
+
+ <section>
+	<h2>Blind source separation (BSS) (2/2)</h2>
+	<h3 style='margin-top:0.5em;'>Non-mixing matrix</h3>
+	<ul>
+	<li>
+		A matrix $\bold{C}$ of dimension $K\times K$ is <b>non-mixing</b> iff. it has a unique non-zero entry in each row and each column
+	</li>
+	<li>
+		If $\tilde{\bold{s}}(t) = \bold{C}\bold{s}(t)$ and $\tilde{\bold{A}}=\bold{A}\bold{C}^{-1}$, then $\bold{x}(t)= \tilde{\bold{A}}\tilde{\bold{s}}(t)$
+		is another admissible decomposition of the observations </br>
+		$\quad\rightarrow$ Sources can be recovered up to a <b>permutation</b> and a <b>multiplicative factor</b>
+	</li>
+	</ul>
+	<aside class="notes">
+		<ul><li> BSS: can be really find $s$ and $A$ from $x$</li>
+			<li>$P$ permutation matrix, then $\tilde{A} = AP^{-1}$ and $\tilde{s}(t) = Ps(t)$ also works</li>
+			<li>$D$ invertible diagonal matrix, then $\tilde{D} = DP^{-1}$ and $\tilde{s}(t) = Ds(t)$ also works</li>
+			<li>At least scale and permutation indetermacies</li>
+<li>product of $P$ and invertible diagonal matrix $D$</li>
+		</ul>
+	</aside>
+ </section>
+
+ <section>
+	<h2>Linear separation of sources</h2>
+	<h3 style='margin-top:0.5em;'>Model</h3>
+	<ul>
+	<li>
+		Let
+		<center>$$\bold{y}(t)=\bold{B}\bold{x}(t)$$</center>
+		$\quad\rightarrow\bold{B}\in\mathbb{R}^{K\times M}$: "separation matrix"
+	</li>
+  </ul>
+		<h3 style='margin-top:0.5em;'>Feasibility</h3>
+
+		<ul>
+			<li>
+Linear separation is feasible if $\mathrm{rank}(\bold{A})=K$
+			</li>
+	<li> Under the previous condition, we get:
+    <center style="margin-top:0.5em; margin-left:1.5em;">$$\bold{B} =
+		\begin{cases}
+		\bold{B} = \bold{A}^{-1} & \mathrm{if} ~ M=K \\
+		\bold{B} = \bold{A}^{\dagger} = (\bold{A}^\top\bold{A})^{-1}\bold{A}^\top & \mathrm{if} ~ M>K  \quad\quad \texttt{(pseudo-inverse)}\\
+		\emptyset & \mathrm{if} ~ M< K
+		\end{cases}
+		$$</center>
+	</li>
+	</ul>
+
+	<aside class="notes">
+		<ul><li> We aim to find an optimal separation matrix</li>
+		</ul>
+	</aside>
+<!-- <div class="question" style='margin-top:0.5em;'> In practice, the matrix $\bold{A}$ is unknown </div> -->
+ </section>
+
+ <section>
+	<h2>Linear separation of sources</h2>
+	<h3 style='margin-top:0.5em;'>Model</h3>
+	<ul>
+	<li>
+		Let
+		<center>$$\bold{y}(t)=\bold{B}\bold{x}(t)$$</center>
+		$\quad\rightarrow\bold{B}\in\mathbb{R}^{K\times M}$: "separation matrix"
+	</li>
+  </ul>
+		<h3 style='margin-top:0.5em;'>Feasibility</h3>
+
+		<ul>
+			<li>
+Linear separation is feasible if $\mathrm{rank}(\bold{A})=K$
+			</li>
+	<li> Under the previous condition, we get:
+    <center style="margin-top:0.5em; margin-left:1.5em;">$$\bold{B} =
+		\begin{cases}
+		\bold{B} = \bold{A}^{-1} & \mathrm{if} ~ M=K \\
+		\bold{B} = \bold{A}^{\dagger} = (\bold{A}^\top\bold{A})^{-1}\bold{A}^\top & \mathrm{if} ~ M>K  \quad\quad \texttt{(pseudo-inverse)}\\
+		\emptyset & \mathrm{if} ~ M< K
+		\end{cases}
+		$$</center>
+	</li>
+	</ul>
+<div class="question" style='margin-top:0.5em;'> In practice, the matrix $\bold{A}$ is unknown </div>
+ </section>
+
+ <section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	 <h2 id='coverh2'>IV - Independent component analysis</h2>
+ </section>
+
+ <section>
+ <h2>Indepedent component analysis (ICA) (1/2) </h2>
+ <h3 style='margin-top:0.5em;'>Problem Statement</h3>
+ <ul>
+	<li>
+		$\bold{A}$ is unknown and we look for a matrix $\bold{B}$ that makes the $y_k(t)$ independent (ICA)
+ </li>
+ <li>
+	 We get the equation:
+	 <center>$$\bold{y}(t) = \bold{C}\bold{s}(t)$$</center>
+	 $\quad\rightarrow$ where $\bold{C}=\bold{BA}$ </br>
+	 $\quad\rightarrow$ $\bold{C}$ is non-mixing $\implies$ the problem is solved.
+ </li>
+ </ul>
+	<img src="figures/ICA.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=40%>
+  <!-- <h3 style='margin-top:0.5em;'>Theorem (identifiability)</h3>
+	<ul>
+		<li>
+			Let $\{s_k(t)\}_{k=1\dots K}$ be $K$ IID sources, among which at most one is Gaussian and:
+			<center>$$
+				\bold{y}(t) = \bold{C}\bold{s}(t)
+			$$</center>
+			with $\bold{C}$ invertible (i.e. $M \geq K$).
+		</li>
+	</ul>
+	<div class="remark" style='margin-top:0.5em;'> If signal $y_k(t)$  are independent, then $\bold{C}$ is non-mixing</div> -->
+ </section>
+
+ <section>
+ <h2>Indepedent component analysis (ICA) (2/2)</h2>
+ <h3 style='margin-top:0.5em;'>Theorem (identifiability)</h3>
+	<img src="figures/ICA.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=40%>
+
+	<ul>
+		<li>
+			Let $\{s_k(t)\}_{k=1\dots K}$ be $K$ IID sources, among which at most one is Gaussian and:
+			<center>$$
+				\bold{y}(t) = \bold{C}\bold{s}(t)
+			$$</center>
+			with $\bold{C}$ invertible (i.e. $M \geq K$).
+		</li>
+	</ul>
+	<div class="remark" style='margin-top:0.5em;'> <b>Theorem:</b> If the signals $y_k(t)$  are independent, then $\bold{C}$ is non-mixing</div>
+ </section>
+
+ <section>
+ <h2>Whitening (1/3)</h2>
+ <h3 style='margin-top:0.5em;'>Assumption and canonical problem (CP)</h3>
+
+ <ul>
+	 <li>
+		 Let suppose that $\mathbb{E}[\bold{s}(t)]=0$, $M\geq K$ and that $\bold{A}$ invertible.
+	 </li>
+	 <div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'> <b>(CP)</b> We assume without loss of generality that:
+	 <center>
+		$$
+	 \Sigma_{ss} = \mathbb{E}[\bold{s}(t)\bold{s}(t)^\top] = \bold{I}_{K} \quad\quad \texttt{(spatially white)}
+	 $$
+	 </center>
+	 </div>
+	 <li>
+		Then
+		<center>$$
+    \Sigma_{xx} = \bold{A}\Sigma_{ss}\bold{A}^\top =\bold{A}\bold{A}^\top
+		$$</center>
+		$\quad\rightarrow$ $\bold{A}$ is a square root matrix of $\bold{\Sigma}_{xx}$
+	 </li>
+ </ul>
+ <aside class="notes">
+	 <ul><li> Two step for ICA the first one is to decorrelate the observed mixture signals</li>
+		 <li> CP: the sources signals are IID so Diagonal assumption is OK</li>
+		 <li>Moreover, we know we can retrieve only up to a multiplicative factor</li>
+	 </ul>
+ </aside>
+ </section>
+
+ <section>
+ <h2>Whitening (2/3)</h2>
+  <h3 style='margin-top:0.5em;'>Decorrelation (Whitening) of $\Sigma_{xx}$</h3>
+   <ul>
+		 <li>
+			 $\Sigma_{xx}$ is diagonalizable in an orthonormal basis:
+			 <center>$$
+				\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top
+			 $$</center>
+
+			 $\quad\rightarrow \Lambda= \mathrm{diag}(\lambda_1, \dots, \lambda_M)$
+			 with $\lambda_1 \geq \dots \geq \lambda_K >\lambda_{K+1}  = \dots =\lambda_{M} = 0$
+			 $\quad\quad (\mathrm{rank}(\Sigma_{xx}) = K)$
+		 </li>
+		 <li>
+			 Let $\bold{S} = \bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)} \in \mathbb{R}^{M\times K}$ then $\Sigma_{xx} = \bold{S}\bold{S}^\top$
+		 </li>
+		 <li>
+			 Let $\bold{W} = \bold{S}^{\dagger}, \bold{z}(t) = \bold{W}\bold{x}(t)$ then:
+			  <center>$$
+				\begin{cases}
+				\mathbb{E}[\bold{z}(t)] = 0, \\
+				\Sigma_{zz} = \bold{W}\Sigma_{xx}\bold{W}^\top = \bold{I}
+				\end{cases}\quad\quad\texttt{(z is a white signal)}
+				$$</center>
+		 </li>
+	 </ul>
+	 <aside class="notes">
+		<ul><li> $\bold{W}$ is a whitening matrix</li>
+		</ul>
+	 </aside>
+ </section>
+
+ <section>
+ <h2>Whitening (3/3)</h2>
+  <h3 style='margin-top:0.5em;'>Conclusion</h3>
+   <ul>
+		 <li>
+       Without loss of generality : $\bold{U} := \bold{WA}$ is a rotation matrix ($\bold{UU}^\top = \bold{I}$)
+		 </li>
+		 <li>
+			Then :
+			<center>$$
+				\bold{y}(t) = \bold{U}^\top \bold{z}(t) = \bold{U}^\top\bold{W}\bold{x}(t) = \bold{s}(t)
+			$$</center>
+		 </li>
+		 <li>
+			 We can thus assume $\bold{B} = \bold{U}^\top\bold{W}$ where $\bold{U}$ is a rotation matrix
+		</li>
+	 </ul>
+	 	<img src="figures/whitening_ICA.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=40%>
+		<aside class="notes">
+ 		<ul><li> In fact $\bold{U}$ is an orthonormal matrix but because of the multiplicative scalar uncertainty, we assume that $\det(U)=1$</li>
+		</ul>
+ 	 </aside>
+ </section>
+<section>
+	<h2>Higher order statistics</h2>
+	<ul>
+		<li>
+			One can estimate $\Sigma_{xx}$ from the observations and get $\bold{W}$
+    </li>
+		<li>
+			The whiteness property (second order cumulants) determines $\bold{W}$ and leaves $\bold{U}$ unknown
+		</li>
+		<li>
+			If sources are Gaussian, the $z_k$ are independent and $\bold{U}$ cannot be determined
+		</li>
+	</ul>
+		 <div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'>
+			In order to determine a rotation $\bold{U}$, we need to exploit the non-Gaussianity of sources and characterize
+			the independence by using cumulants of ordrer greater than 2.
+		</div>
+		<aside class="notes">
+ 		<ul><li> Mutual information: nonnegative and zero if random variable are independent.</li>
+			<li>Mutual information of $\bold{y(t)}$: can be used as an objective function to minimized</li>
+		</ul>
+ 	 </aside>
+
+</section>
+<section>
+	<h2>Contrast functions</h2>
+	 <h3 style='margin-top:0.5em;'>Definition and optimization problem</h3>
+	 <ul>
+		 <li>
+			 $\phi$ is a <b>contrast function (CF)</b> iff.
+			 <center>$$
+				 \begin{cases}
+				 \phi[\bold{Cs}(t)] \geq \phi[\bold{s}(t)], \forall \bold{C} \\
+				 \phi[\bold{Cs}(t)] = \phi[\bold{s}(t)] \Leftrightarrow \bold{C} \mathrm{\ is\ non-mixing}
+				 \end{cases}
+
+			 $$</center>
+		 </li>
+		 <li>
+			 Separation is performed by minimizing $\phi[\bold{y}(t)=\bold{Cs}(t)]$ wrt. $\bold{U}$ (or $\bold{B}$)
+		 </li>
+	 </ul>
+	 	 <h3 style='margin-top:0.5em;'>Contrast functions example</h3>
+		 <!-- <ul>
+			 <li>
+$\phi_{IM}[\bold{y}(t)]=\mathbb{I}[\bold{y}(t)] \qquad\qquad\qquad\qquad\quad\quad\texttt{(Canonical CF)}$</li>
+			 <li>$\phi_{IM}^{\circ}[\bold{y}(t)]=\sum_{k=1}^{K}\mathbb{H}[y_k(t)] \mathrm{~with~} \Sigma_{yy} = \bold{I} \quad\texttt{(Orthogonal contrast)}$</li>
+<li>$\phi_{JADE}^{\circ}[\bold{y}(t)]=\sum_{ijkl \neq iiii}(\kappa_{ijkl}^4[\bold{y}(t)])^2 \quad~~\quad\texttt{(Approximation of} ~ \phi^{\circ}_{IM}\texttt{)} $</li>
+</ul> -->		<aside class="notes">
+ 		<ul><li> $C=BA$ if the data as been whitened, then $B=\bold{U}^{\top}\bold{W}$</li>
+			<li>Mutual information of $\bold{y(t)}$: can be used as an objective function to minimized</li>
+		</ul>
+ 	 </aside>
+
+</section>
+
+
+<section>
+	<h2>Contrast functions</h2>
+	 <h3 style='margin-top:0.5em;'>Definition and optimization problem</h3>
+	 <ul>
+		 <li>
+			 $\phi$ is a <b>contrast function (CF)</b> iff.
+			 <center>$$
+				 \begin{cases}
+				 \phi[\bold{Cs}(t)] \geq \phi[\bold{s}(t)], \forall \bold{C} \\
+				 \phi[\bold{Cs}(t)] = \phi[\bold{s}(t)] \Leftrightarrow \bold{C} \mathrm{\ is\ non-mixing}
+				 \end{cases}
+
+			 $$</center>
+		 </li>
+		 <li>
+			 Separation is performed by minimizing $\phi[\bold{y}(t)=\bold{Cs}(t)]$ wrt. $\bold{U}$ (or $\bold{B}$)
+		 </li>
+	 </ul>
+	 	 <h3 style='margin-top:0.5em;'>Contrast functions example</h3>
+		 <ul>
+			 <li>
+$\phi_{IM}[\bold{y}(t)]=\mathbb{I}[\bold{y}(t)] \qquad\qquad\qquad\qquad\quad\quad\texttt{(Canonical CF)}$</li>
+			 <li>$\phi_{IM}^{\circ}[\bold{y}(t)]=\sum_{k=1}^{K}\mathbb{H}[y_k(t)] \mathrm{~with~} \Sigma_{yy} = \bold{I} \quad\texttt{(Orthogonal contrast)}$</li>
+<li>$\phi_{JADE}^{\circ}[\bold{y}(t)]=\sum_{ijkl \neq iiii}(\kappa_{ijkl}^4[\bold{y}(t)])^2 \quad~~\quad\texttt{(Approximation of} ~ \phi^{\circ}_{IM}\texttt{)} $</li>
+</ul>
+<!-- <h3 style='margin-top:0.5em;'>Descent algorithms ( Minimizing $\phi$ wrt. $\bold{B}$ or $\bold{U}$)</h3>
+<ul>
+	<li>
+		 Gradient algorihm applied to $\bold{B}$
+	</li>
+	<li>
+	 Parameterization of $\bold{U}$ given rotations and coordinate descent
+	</li> -->
+	<aside class="notes">
+	 		<ul><li> $C=BA$ if the data as been whitened, then $B=\bold{U}^{\top}\bold{W}$</li>
+				<li>Mutual information of $\bold{y(t)}$: can be used as an objective function to minimized</li>
+				<li>the orthogonal contrast is available if the data has been withened</li>
+				<li>Joint approximate diagonalization of eigenmatrices (JADE): joint diagonalization criterion</li>
+			</ul>
+	 	 </aside>
+</section>
+<section>
+	<h2>Contrast functions</h2>
+	 <h3 style='margin-top:0.5em;'>Definition and optimization problem</h3>
+	 <ul>
+		 <li>
+			 $\phi$ is a <b>contrast function (CF)</b> iff.
+			 <center>$$
+				 \begin{cases}
+				 \phi[\bold{Cs}(t)] \geq \phi[\bold{s}(t)], \forall \bold{C} \\
+				 \phi[\bold{Cs}(t)] = \phi[\bold{s}(t)] \Leftrightarrow \bold{C} \mathrm{\ is\ non-mixing}
+				 \end{cases}
+
+			 $$</center>
+		 </li>
+		 <li>
+			 Separation is performed by minimizing $\phi[\bold{y}(t)=\bold{Cs}(t)]$ wrt. $\bold{U}$ (or $\bold{B}$)
+		 </li>
+	 </ul>
+	 	 <h3 style='margin-top:0.5em;'>Contrast functions example</h3>
+		 <ul>
+			 <li>
+$\phi_{IM}[\bold{y}(t)]=\mathbb{I}[\bold{y}(t)] \qquad\qquad\qquad\qquad\quad\quad\texttt{(Canonical CF)}$</li>
+			 <li>$\phi_{IM}^{\circ}[\bold{y}(t)]=\sum_{k=1}^{K}\mathbb{H}[y_k(t)] \mathrm{~with~} \Sigma_{yy} = \bold{I} \quad\texttt{(Orthogonal contrast)}$</li>
+<li>$\phi_{JADE}^{\circ}[\bold{y}(t)]=\sum_{ijkl \neq iiii}(\kappa_{ijkl}^4[\bold{y}(t)])^2 \quad~~\quad\texttt{(Approximation of} ~ \phi^{\circ}_{IM}\texttt{)} $</li>
+</ul>
+<h3 style='margin-top:0.5em;'>Descent algorithms ( Minimizing $\phi$ wrt. $\bold{B}$ or $\bold{U}$)</h3>
+<ul>
+	<li>
+		 Gradient algorihm applied to $\bold{B}$
+	</li>
+	<li>
+	 Parameterization of $\bold{U}$ as a product of Givens rotations and coordinate descent
+	</li>
+	<aside class="notes">
+			<ul><li>Givens rotations: $2$-dimensional rotation matrices parameterized by a single angle
+			applied iteratively to every pair of entries of vector $\bold{y}(t)$ </li>
+			</ul>
+		 </aside>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<!-- <li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li> -->
+</ol>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<!-- <li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li> -->
+</ol>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<!-- <li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li> -->
+</ol>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<!-- <li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li> -->
+</ol>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<!-- <li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li> -->
+</ol>
+</section>
+<section>
+<h2>Algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{U}$ by minimizing a contrast function $\phi$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^\top \bold{z}(t)$</li>
+</ol>
+</section>
+<!-- alpha-stable Theory -->
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>V - Second order methods</h2>
+</section>
+<section>
+<h2>Temporal coherence of sources</h2>
+ <h3 style='margin-top:0.5em;'>Model and assumption</h3>
+ <ul>
+	 <li> Model:<br>
+		 $
+		 \begin{cases}
+		 \mathbb{E}[\bold{s}(t)]=0 \\
+		 \bold{R}_{ss}(\tau) = \mathbb{E}[\bold{s}(t+\tau)\bold{s}(t)^\top] = \mathrm{diag}(r_{s_k}(\tau))
+		 \end{cases} \quad\texttt{(centered WSS vector process)}
+		 $
+	 </li>
+	 <li>Canonical problem: we assume that $\Sigma_{ss}=\bold{R}_{ss}(0)=\bold{I}$</li>
+ </ul>
+  <h3 style='margin-top:0.5em;'>Spatial whitening of $\bold{x}$</h3>
+	<!-- <ul>
+		<li>
+			We define as before $\bold{S}$ a matrix square root of $\Sigma_{xx}$, $\bold{W}=\bold{S}^{\dagger}$ and $\bold{z}(t)=\bold{Wx}(t)$
+		</li>
+		<li>
+			Again because $\Sigma_{xx}=\bold{AA}^\top, \bold{U}:=\bold{WA}$ is a rotation matrix
+		</li>
+		<li>
+			However this time, $\forall \tau \in \mathbb{Z}, \bold{R}_{zz}(\tau) = \bold{U}\bold{R}_{ss}(\tau)\bold{U}^\top$
+		</li>
+	</ul>
+	<div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'>
+	 The joint diagonalization of $\bold{R}_{zz}(\tau)$ for several $\tau$ will provide a rotation matrix $\bold{U}$
+ </div> -->
+ <aside class="notes">
+		 <ul><li> estimating higher order statistics is in general more sensitive than second order</li>
+			 <li> We relax the source model that it is only identifiable from its second order statistic.</li>
+		 </ul>
+		</aside>
+</section>
+
+<section>
+<h2>Temporal coherence of sources</h2>
+ <h3 style='margin-top:0.5em;'>Model and assumption</h3>
+ <ul>
+	 <li> Model:<br>
+		 $
+		 \begin{cases}
+		 \mathbb{E}[\bold{s}(t)]=0 \\
+		 \bold{R}_{ss}(\tau) = \mathbb{E}[\bold{s}(t+\tau)\bold{s}(t)^\top] = \mathrm{diag}(r_{s_k}(\tau))
+		 \end{cases} \quad\texttt{(centered WSS vector process)}
+		 $
+	 </li>
+	 <li>Canonical problem: we assume that $\Sigma_{ss}=\bold{R}_{ss}(0)=\bold{I}$</li>
+ </ul>
+  <h3 style='margin-top:0.5em;'>Spatial whitening of $\bold{x}$</h3>
+	<ul>
+		<li>
+			We define as before $\bold{S}$ a matrix square root of $\Sigma_{xx}$, $\bold{W}=\bold{S}^{\dagger}$ and $\bold{z}(t)=\bold{Wx}(t)$
+		</li>
+		<li>
+			Again because $\Sigma_{xx}=\bold{AA}^\top, \bold{U}:=\bold{WA}$ is a rotation matrix
+		</li>
+		<li>
+			However this time, $\forall \tau \in \mathbb{Z}, \bold{R}_{zz}(\tau) = \bold{U}\bold{R}_{ss}(\tau)\bold{U}^\top$
+		</li>
+	</ul>
+	<!-- <div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'>
+	 The joint diagonalization of $\bold{R}_{zz}(\tau)$ for several $\tau$ will provide a rotation matrix $\bold{U}$
+ </div> -->
+</section>
+
+<section>
+<h2>Temporal coherence of sources</h2>
+ <h3 style='margin-top:0.5em;'>Model and assumption</h3>
+ <ul>
+	 <li> Model:<br>
+		 $
+		 \begin{cases}
+		 \mathbb{E}[\bold{s}(t)]=0 \\
+		 \bold{R}_{ss}(\tau) = \mathbb{E}[\bold{s}(t+\tau)\bold{s}(t)^\top] = \mathrm{diag}(r_{s_k}(\tau))
+		 \end{cases} \quad\texttt{(centered WSS vector process)}
+		 $
+	 </li>
+	 <li>Canonical problem: we assume that $\Sigma_{ss}=\bold{R}_{ss}(0)=\bold{I}$</li>
+ </ul>
+  <h3 style='margin-top:0.5em;'>Spatial whitening of $\bold{x}$</h3>
+	<ul>
+		<li>
+			We define as before $\bold{S}$ a matrix square root of $\Sigma_{xx}$, $\bold{W}=\bold{S}^{\dagger}$ and $\bold{z}(t)=\bold{Wx}(t)$
+		</li>
+		<li>
+			Again because $\Sigma_{xx}=\bold{AA}^\top, \bold{U}:=\bold{WA}$ is a rotation matrix
+		</li>
+		<li>
+			However this time, $\forall \tau \in \mathbb{Z}, \bold{R}_{zz}(\tau) = \bold{U}\bold{R}_{ss}(\tau)\bold{U}^\top$
+		</li>
+	</ul>
+	<div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'>
+	 The joint diagonalization of $\bold{R}_{zz}(\tau)$ for several $\tau$ will provide a rotation matrix $\bold{U}$
+ </div>
+ <aside class="notes">
+		<ul><li> estimating higher order statistics is in general more sensitive than second order</li>
+			<li> We relax the source model that it is only identifiable from its second order statistic.</li>
+		</ul>
+	 </aside>
+</section>
+
+<section>
+<h2>Joint diagonalization</h2>
+ <h3 style='margin-top:0.5em;'>Unicity theorem</h3>
+ <ul>
+	 <li>Let a set $\{\bold{R}_{zz}(\tau)\}_{\tau} \in \mathbb{R}^{K\times K}$ such that:
+		<center style="margin-left:15em;">$$
+		\bold{R}_{zz}(\tau) = \bold{U}\bold{R_{ss}(\tau)}\bold{U}^\top
+		$$</center>
+		$\quad\rightarrow \bold{U}$ unitary and $\bold{R}_{ss}(\tau)=\mathrm{diag}(r_{s_k}(\tau))$.
+	 </li>
+</ul>
+	<div class="remark" style='margin-top:0.5em; margin-bottom:0.5em;'>
+	 $\bold{U}$ is unique $\Leftrightarrow \forall 1\leq k \neq l \leq K~ \exists \tau, r_{s_k}(\tau) \neq r_{s_l}(\tau)$
+ </div>
+ <h3 style='margin-top:0.5em;'>Joint diagonalization methods</h3>
+ <ul>
+	 <li> minimize :
+		 $J(\bold{U}) = \sum_\tau\mid\mid \bold{U}^\top\bold{R}_{zz}(\tau)\bold{U} - \mathrm{diag}(\bold{U}^\top\bold{R}_{zz}(\tau)\bold{U}) \mid\mid_{F}^2$
+	</li>
+	<li>Parameterization of $\bold{U}$ as a Givens rotations and coordinate descent</li>
+ </ul>
+ <aside class="notes">
+	 <ul><li>$U$ is unique up to a non-mixing matrix</li>
+		 <li> We relax the source model that it is only identifiable from its second order statistic.</li>
+	 </ul>
+	</aside>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<!-- <li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<!-- <li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<!-- <li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<!-- <li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<!-- <li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<!-- <li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li> -->
+</ol>
+</section>
+
+<section>
+<h2>Second Order Blind Identification (SOBI) algorithm</h2>
+<ol>
+	<li>Estimation of $\Sigma_{xx}$</li>
+	<li>Diagonalization: $\Sigma_{xx} = \bold{Q}\Lambda^2\bold{Q}^\top$</li>
+	<li>Compute $\bold{S}=\bold{Q}_{(:, 1:K)}\Lambda_{(1:K, 1:K)}$ and $\bold{W}= \bold{S}^{\dagger}$</li>
+	<li>Data whitening: $\bold{z}(t) = \bold{W}\bold{x}(t)$</li>
+	<li>Estimation of $\bold{R}_{zz}(\tau)$ for various delays $\tau$</li>
+	<li>Approximate joint diagonalization of $\bold{R}_{zz}(\tau)$ in a common basis $\bold{U}$</li>
+	<li>Estimation of source signals via $\bold{y}(t) = \bold{U}^{\top}\bold{z}(t)$</li>
+</ol>
+</section>
+
+<section>
+<h2>Non-stationnarity of sources (1/2)</h2>
+<h3 style='margin-top:0.5em;'>Model and assumption</h3>
+<ul>
+	<li> Model:
+		$
+		\begin{cases}
+		\mathbb{E}[\bold{s}(t)]=0 \\
+		\bold{R}_{ss}(\tau) = \mathbb{E}[\bold{s}(t+\tau)\bold{s}(t)^\top] = \mathrm{diag}(r_{s_k}(\tau))
+		\end{cases} \quad\texttt{(centered WSS vector process)}
+		$
+	</li>
+	<li><strike>Canonical problem: we assume that $\cancel{\Sigma_{ss}=\bold{R}_{ss}(0)=\bold{I}}$</strike></li>
+</ul>
+ <h3 style='margin-top:0.5em;'>Method</h3>
+ <ul>
+ <li>
+	 Then $\Sigma_{xx}(t) = \bold{A}\Sigma_{ss}(t)\bold{A}^\top$ (we can assume $\Sigma_{xx}=\sum_t\Sigma_{xx}(t)=\bold{A}\bold{A}^\top$)
+</li>
+<li>
+	We minimize the criterion:<br>
+	<center>$J(\bold{U}) = \sum_\tau\mid\mid \bold{U}\Sigma_{zz}(\tau)\bold{U}^\top - \mathrm{diag}(\bold{U}\Sigma_{zz}(\tau)\bold{U}^\top) \mid\mid_{F}^2$
+</center>
+</li>
+</ul>
+</section>
+<section>
+<h2>Non-stationnarity of sources (2/2)</h2>
+<h3 style='margin-top:0.5em;'>Variant SOBI algorithm</h3>
+<ol>
+	<li>Segmentation of source signals and estimation of covariance
+matrices $\Sigma_{xx}(t)$ on windows centered at different times $t$</li>
+<li>Joint diagonalization of matrices $\Sigma_{xx}(t)$ in a common basis $\bold{B}$</li>
+<li>Estimation of source signals via $\bold{y}(t) = \bold{Bx}(t)$</li>
+</ol>
+</section>
+
+<section>
+<h2>Conclusion of the first part</h2>
+<ul>
+	<li>The use of higher order cumulants is only necessary for the
+non-Gaussian IID source model</li>
+<li>Second order statistics are sufficient for sources that are:<br>
+$\quad\rightarrow$ stationary but not IID (→ spectral dynamics)<br>
+$\quad\rightarrow$non stationary (→ temporal dynamics)
+</li>
+<li>
+	Remember that classical tools (based on second order
+	statistics) are appropriate for blind separation of independent
+	(and possibly Gaussian) sources, on condition that the
+	spectral / temporal source dynamics is taken into account
+</li>
+</ul>
+
+</section>
+
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VI - Time-frequency methods</h2>
+</section>
+<section>
+	<h2>Time-frequency (TF) representations</h2>
+	<h3 style='margin-top:0.5em;'>Motivations</h3>
+	<ul>
+	<li>
+		Spectral and temporal dynamics are highlighted by a TF representation of signals
+	</li>
+	<li>
+		TF domain: adequate to process convolutive and/or under-determined mixture
+	</li>
+	</ul>
+		<h3 style='margin-top:0.5em;'>Use of a filter bank (STFT and MDCT)</h3>
+		<ul>
+			<li> Decomposition in $F$ sub-bands and decimation of factor $T \leq F$</li>
+			<li>Analysis filters $h_f$ and synthesis filters $g_f$</li>
+			<li>TF representation of mixture: $x_m(f,n) = (h_f\ast x_m)(nT)$</li>
+			<li>Perfect reconstruction: $x_m(t) = \sum_{f=1}^F\sum_{n\in \mathbb{Z}} g_f(t-nT)x_m(f,n)$
+			</li>
+		</ul>
+		<div class="question" style='margin-top:0.5em; margin-bottom:0.5em;'>
+		 Then $\forall f,n ~ \bold{x}(f,n) = \bold{As}(f,n)\quad\texttt{(linear instantaneous mixture)}$
+	 </div>
+	 <aside class="notes">
+		<ul><li>$U$ is unique up to a non-mixing matrix</li>
+			<li> perfect reconstruction filterbank: MDCT and STFT</li>
+			<li>$T$ is called the hopsize</li>
+			<li>We have the same procedure for the sources</li>
+						<li>Interestingly, the linear instantaneous mixture is unchanged</li>
+		</ul>
+	 </aside>
+</section>
+<section>
+<h2>Non-stationary source model</h2>
+<div class="affirmation" style='margin-top:0.5em; margin-bottom:0.5em;'>
+Assumption: independent and centered second order processes
+</div>
+		<h3 style='margin-top:0.9em;'>Model of non-stationary sources</h3>
+		<ul>
+		<li>
+			if the time frames $n_1$ and $n_2$ are disjoint, then $s_k(., n_1)$ and
+       $s_k(., n_2)$ are uncorrelated and of distinct variances
+		</li>
+		</ul>
+
+		<h3 style='margin-top:0.5em;'>Model of WSS sources</h3>
+		<ul>
+		<li>
+		if sub-bands $f_1$ and $f_2$ are disjoint then
+		 $s_k(f_1, .)$ and $s_k(f_2, .)$ are WSS, uncorrelated and of distinct variances<br>
+
+	 </li>
+		</ul>
+		<h3 style='margin-top:0.5em;'>Time-frequency source model</h3>
+		<ul>
+		<li> all $s_k(f,n)$ are uncorrelated for all $n$ and $f$, of distinct
+			variances $\sigma^2_{k}(f,n)$ ($\implies$ time-frequency dynamics)
+		</ul>
+</section>
+
+<section>
+<h2>Separation method</h2>
+		<h3 style='margin-top:0.9em;'>Separation by joint matrix diagonalization</h3>
+		<ul>
+		<li>
+ We have $\Sigma_{xx}(f,n) = \bold{A}\Sigma_{ss}(f,n)\bold{A}^\top$ where $\Sigma_{ss}(f,n) = \mathrm{diag}(\sigma_k^2(f,n))$
+		</li>
+		</ul>
+
+			<h3 style='margin-top:0.9em;'>Variant of the SOBI algorithm</h3>
+			<ol>
+			<li>TF analysis of the mixtures $x_k(f,n)$</li>
+			<li>Estimation and diagonalization of $\Sigma_{xx}(f,n)$ in a basis $\bold{B}$</li>
+			<li>Estimation of the source signals via $\bold{y}(f,n) = \bold{Bx}(f,n)$</li>
+			<li>TF synthesis of the sources:
+				<center>$$
+					y_k(t) = \sum_{f=1}^{F} \sum_{n\in \mathbb{Z}} g_f(t-nT)y_k(f,n)
+				$$</center>
+
+			</li>
+			</ol>
+</section>
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VII - Convolutive mixtures</h2>
+</section>
+
+<section>
+	<h2>Source images</h2>
+	<div class="affirmation" style='margin-top:0.5em; margin-bottom:0.5em;'>
+	Instantanenous mixture model: unsuitable for real acoustic mixtures
+	</div>
+<h3 style='margin-top:0.5em;'> Mixture of source image model</h3>
+	<ul>
+
+		<li>Let $\bold{x}_k(f,n) \in \mathbb{R}^M$ be the <b>source image</b> of $s_k(f,n)$<br>
+			$\quad\rightarrow$ received multichannel signal if only source $s_k(f,n)$ was active
+		</li>
+		<li>
+			Mixture model: $\bold{x}(f,n) = \sum_{k=1}^K \bold{x}_k(f,n)$
+		</li>
+
+	</ul>
+<h3 style='margin-top:0.5em;'> Decomposition of the source separation problem</h3>
+<ul>
+	<li> <b>Separation</b>: estimate $\bold{x}_k(f,n)$ from the mixture $\bold{x}(f,n)$</li>
+	<li> <b>Deconvolution</b>: estimate $s_k(f,n)$ from the source image $\bold{x}_k(f,n)$</li>
+</ul>
+</section>
+
+<section>
+		<h2>Convolution linear mixture</h2>
+	<h3 style='margin-top:0.5em;'> Convolutive mixture model</h3>
+	<ul>
+		<li>$x_m(t) = \sum_{k=1}^{K}(a_{mk} \ast s_k)(t)$, i.e. $\bold{x}(t) = \bold{A} \ast \bold{s}(t)$
+	</ul>
+	<h3 style='margin-top:0.5em;'> Identifiability theorem</h3>
+	<ul>
+		<li>Let $s_k(t)$ be $K$ IID sources, among which at most one is Gaussian,
+and $\bold{y}(t) = \bold{C} \ast \bold{s}(t)$ with $C$ invertible ((over)-determined case).
+If signals $y_k(t)$ are independent, then $\bold{C}$ is non-mixing.</li>
+	</ul>
+	<aside class="notes">
+	 <ul><li>$a_{mk}$: impulse response of a stable filter</li>
+	 </ul>
+	</aside>
+</section>
+
+<section>
+	<h2>Time-Frequency approach</h2>
+		<h3 style='margin-top:0.5em;'> Mixture model and narrow-band approximation</h3>
+		<ul>
+			<li>$x_m(t) = \sum_{k=1}^{K}(a_{mk} \ast s_k)(t)$,</li>
+			<li>the filter bank corresponds to an STFT</li>
+			<li>the IR of $a_{mk}$ is short compared with the window length</li>
+			<li>$\forall m,k,f, a_{mk}(\nu)$ varies slowly compared with $h_f(\nu)$</li>
+		</ul>
+		<h3 style='margin-top:0.5em;'>Approximation of the convolutive mixture model</h3>
+		<ul>
+			<li>$x_m(f,n)=\sum_{k=1}^K a_{mk}(f)s_k(f,n)$ i.e. $\bold{x}(f,n)=\bold{A}(f)\bold{s}(f,n)$<br>
+					$\quad\rightarrow$ $F$ instantaneous mixture models in every sub-band<br>
+					$\quad\rightarrow$ we can use any ICA method in every sub-band
+			</li>
+
+		</ul>
+</section>
+
+<section>
+	<h2>Independent component analysis</h2>
+	<ul>
+		<li>Let $\bold{y}(f,n) = \bold{B}(f)\bold{x}(f,n)$ where $\bold{B}(f)\in\mathbb{C}^{K\times M}$</li>
+		<li>Linear separation is feasible if $\bold{A}(f)$ has rank $K$.<br>
+				 $\quad\rightarrow\bold{y}(f,n)=\bold{s}(f,n)$ with
+
+				$\bold{B}(f)=
+				\begin{cases}
+				\bold{A}(f)^{-1} & \mathrm{if~} M=K \\
+				\bold{A}(f)^{\dagger} & \mathrm{if~} M>K \\
+				\emptyset & \mathrm{if~} M< K
+				\end{cases}
+				$
+		</li>
+ <li>In practice $\bold{A}(f)$ is unknown:<br>
+	 $\quad\rightarrow$ We look for $\bold{B}(f)$ that makes $y_k(f,n)$ independent (ICA)<br>
+	 $\quad\rightarrow$ We get $\bold{y}(f,n) = \bold{C}(f)\bold{s}(f,n)$ where $\bold{C}(f) = \bold{B}(f)\bold{A}(f)$<br>
+	 $\quad\rightarrow \bold{C}(f)$ is non-mixing
+
+ </li>
+	</ul>
+</section>
+<section>
+		<h2>Indeterminacies</h2>
+		<div class="affirmation" style='margin-top:0.5em; margin-bottom:0.5em;'>
+		Indeterminacies (perumatations and multiplicatives factors) in matrices $\bold{C}(f)$
+		</div>
+		<ul>
+		<li>$\forall k$, identify indexes $k, f$ such that $\forall f, y_{k_f}(f,n)=c_{k_f,k}s_k(f,n)$</li>
+		<li>identify the multiplicative factors $c_{k_f,k}$</li>
+		</ul>
+		<div class="affirmation" style='margin-top:0.5em; margin-bottom:0.5em;'>
+		Infinitely many solutions $\implies$ need to constrain the model
+		</div>
+		<h3 style='margin-top:0.5em;'> Assumptions on the mixture and sources</h3>
+		<ul>
+		<li>continuity of the frequency responses $a_{mk}(f)$ with respect to $f$ <br>
+				$\quad\rightarrow$ beamforming model or anechoic model
+		</li>
+		<li> similarity of the temporal dynamics of $\sigma_k^2(f,n)$ (or NMF model)
+		</li>
+
+		</ul>
+		<aside class="notes">
+		 <ul><li>$a_{mk}$: impulse response of a stable filter</li>
+		 </ul>
+		</aside>
+</section>
+<section>
+			<h2>Convolutive mixture models</h2>
+			<h3 style='margin-top:0.5em;'>Beamforming model</h3>
+			<ul>
+			<li>Assumptions: plane waves, far field, no reverberation, linear antenna</li>
+			<li>Model: $a_{mk}(f)=e^{-2i\pi f\tau_{mk}}$ where $\tau_{mk}=\frac{d_m}{c}\sin(\theta_k)$</li>
+			<li>Parameters: positions $d_m$ of the sensors and angles $\theta_k$ of the sources</li>
+			</ul>
+
+			<h3 style='margin-top:0.5em;'>Anechoic model</h3>
+			<ul>
+			<li>Assumptions: punctual sources, no reverberation</li>
+			<li>Model: $a_{mk}(f)=\alpha_{mk}e^{-2i\pi f\tau_{mk}}$ where $\tau_{mk}=\frac{r_{mk}}{c}$ and $\alpha_{mk} = \frac{1}{\sqrt{4\pi}r_{mk}}$</li>
+			<li>Parameters: distances $r_{mk}$ between the sensors and sources</li>
+			</ul>
+			<aside class="notes">
+			 <ul><li>In practice, do not represent a real acoustic mixtures (but solve the multiple permutation problem)</li>
+			 </ul>
+			</aside>
+</section>
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VIII - Under-determined mixtures</h2>
+</section>
+
+<section>
+			<h2>Under-determined convolutive mixtures</h2>
+			<div class="affirmation" style='margin-top:0.5em; margin-bottom:0.5em;'>
+				Usual case in audio: monophonic $(M = 1)$ or stereophonic
+				$(M = 2)$ mixtures, with a number of sources $K > M$
+			</div>
+			<h3 style='margin-top:0.5em;'>Convolutive mixture model and assumption</h3>
+			<ul>
+			<li>$\bold{x}(f,n)=\bold{A}(f)\bold{s}(f,n)$ with $M< K$</li>
+			<li>We assume that $\bold{A}(f)$ and $\Sigma_{ss}(f,n) = \mathrm{diag}(\sigma^2_k(f,n))$ are known</li>
+			<li>Even in this case, there is no matrix $\bold{B}(f)$ such that $\bold{B}(f)\bold{A}(f)=\bold{I}_K$</li>
+			</ul>
+			<img src="figures/Conv_under.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=50%>
+</section>
+
+<section>
+			<h2>Separation via non-stationary filtering</h2>
+			Let $\bold{y}(f,n) = \bold{B}(f,n)\bold{x}(f,n)$ where $\bold{B}(f,n) \in \mathbb{C}^{K\times M}$
+			<h3 style='margin-top:0.5em;'>Mean-Squared error estimation</h3>
+			<ul>
+				<li>We look for $\bold{B}(f,n)$ which minimizes $\mathbb{E}[\mid\mid\bold{y}(f,n)-\bold{s}(f,n)\mid\mid^2_{2} ]$</li>
+				<li>Sol.: $\bold{B}(f,n) = \Sigma_{sx}(f,n)\Sigma_{xx}(f,n)^{-1} ~~~~~~ \texttt{(Multichannel Wiener filter)}$<br>
+						$\quad\rightarrow \Sigma_{xx}(f,n) = \bold{A}(f)\Sigma_{ss}(f,n)\bold{A}(f)^{\mathrm{H}},
+						\Sigma_{sx}(f,n) = \Sigma_{ss}(f,n)\bold{A}(f)^{\mathrm{H}}
+						$
+				</li>
+				<li>
+					$\bold{x}(f,n)=\bold{A}(f)\bold{y}(f,n)$ (exact reconstruction)
+				</li>
+			</ul>
+			<h3 style='margin-top:0.5em;'>Particular case: monophonic mixtures</h3>
+			<ul>
+				<li>Without loss of generality, we define $\bold{A}(f)=\left[\begin{array}{ccc}
+1 & \dots & 1\\
+0 & \cdots & 0\\
+\vdots & \cdots & \vdots
+\end{array}\right]$ </li>
+				<li> Then $y_k(f,n) = \frac{\sigma_k^2(f,n)}{\sum_{k^\prime=1}^K\sigma_{k^\prime}(f,n)} x(f,n) ~~~~~~~\texttt{(Wiener filter)}$
+				</li>
+			</ul>
+</section>
+<section>
+				<h2>Separation algorithm</h2>
+				<ol>
+					<li>TF analysis: $x_k(f,n) = (h_f \ast x_k)(f,nT)$</li>
+					<li>Estimation of $\bold{A}$ and $\sigma^2_k(f,n)$<br>
+							$\quad\rightarrow$ instantaneous mixture model<br>
+							$\quad\rightarrow$ sparse source model<br>
+					</li>
+					<li> Compute $\bold{B}(f,n) = \Sigma_{sx}(f,n)\Sigma_{xx}(f,n)^{-1}$</li>
+					<li>Estimation of the source signals via $\bold{y}(f,n)=\bold{B}(f,n)\bold{x}(f,n)$</li>
+					<li>TF synthesis of the sources:
+						$y_k(t) = \sum_{f=1}^F \sum_{n\in \mathbb{Z}} g_f(t-nT)y_k(f,n)$
+					</li>
+				</ol>
+</section>
+
+<section>
+				<h2>Stereophonic mixtures: temporal sparsity</h2>
+				Case of a linear instantanous stereophonic mixture: $\bold{x}(t)= \bold{A}\bold{s}(t)$
+				<img src="figures/temp_sparse.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=100%>
+				<aside class="notes">
+				 <ul><li>sparse in the sense that there is a lot of zero for each sources</li>
+					 <li>In that non-overlapping setting, it is easy as a classification problem</li>
+				 </ul>
+				</aside>
+</section>
+
+<section>
+				<h2>Sparsity in a transformed domain</h2>
+				Case of a linear instantanous stereophonic mixture: $\bold{x}(f,n)= \bold{A}\bold{s}(f,n)$
+				<img src="figures/temp_MDCT.png" alt="" style="margin-left:auto; margin-right:auto; display:block; margin-top:0.8em" width=100%>
+				<aside class="notes">
+				 <ul><li>In practice when there is overlap (in music), they becomes not discretable</li>
+					 <li>MDCT is still OK.</li>
+				 </ul>
+				</aside>
+</section>
+
+<section>
+	<h2>Degenerate Unmixing Estimation Technique (DUET) (1/2)</h2>
+	<h3 style='margin-top:0.5em;'>Mixture model and directivity assumption</h3>
+	<ul>
+	<li>Model in sterephonic case $(K=2)$: $\bold{x}(f,n)=\bold{A}\bold{s}(f,n)$</li>
+	<li>Without loss of generality, we assume $\bold{A}_{(:,k)}=[\cos(\theta_k), \sin(\theta_k)]^{\top}, \forall k$</li>
+	</ul>
+		<h3 style='margin-top:0.5em;'>Sparse source model</h3>
+		<ul>
+		<li>$\forall (f,n), \exists ! k_{(f,n)}$ such that $\sigma^2_{l_{(f,n)}} =
+			 \begin{cases}
+			 0   & \mathrm{if~} l \neq  k_{(f,n)}, \\
+			 u_{l_{(f,n)}} > 0  & \mathrm{otherwise}
+			 \end{cases}
+
+			 $</li>
+		<li>If only source $k$ is active at $(f,n),$ then $\bold{x}(f,n) = \bold{a}_{k}s_k(f,n)$</li>
+		</ul>
+
+		<aside class="notes">
+		 <ul><li>only one source can be active at any TF bin (sources do not overlap in the TF domain)</li>
+			 <li>MDCT is still OK.</li>
+		 </ul>
+		</aside>
+</section>
+
+<section>
+	<h2>Degenerate Unmixing Estimation Technique (DUET) (2/2)</h2>
+	<ol>
+		<li>TF analysis: $x_k(f,n) = (h_f \ast x_k)(f,nT)$</li>
+		<li>Estimation of $\theta_{k}$ and of the active source $k_{(f,n)}$<br>
+				$\quad\rightarrow$ computation of the histogram of the angles of vectors $\bold{x}(f,n)$<br>
+				$\quad\rightarrow$ peak detection in order to estimate $\theta_k$<br>
+				$\quad\rightarrow$ determination of the active source by proximity with $\theta_{k}$
+		</li>
+		<li>  Source separation: for all $k$,<br>
+		$\quad\rightarrow$ estimation of source images via binary masking:<br>
+		$\quad \bold{y}_k(f,n)=
+		\begin{cases}
+		0 & \mathrm{if~} k \neq  k_{(f,n)}, \\
+		\bold{x}(f,n) & \mathrm{otherwise}
+		\end{cases}
+		$
+	</li>
+ <li>MMSE estimation of the sources : $y_k(f,n) = \frac{\bold{a}_k(f)^{\mathrm{H}}}{\mid\mid\bold{a}_k(f)\mid\mid^2_2}\bold{y}_{k}(f,n)$</li>
+ <li>TF synthesis of the sources:
+	 $y_k(t) = \sum_{f=1}^F \sum_{n\in \mathbb{Z}} g_f(t-nT)y_k(f,n)$
+ </li>
+
+	</ol>
+</section>
+
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>IX - Conclusion</h2>
+</section>
+
+
+<section>
+ <h2>Conclusion</h2>
+ <h3 style='margin-top:0.5em;'>Summary</h3>
+ <ul>
+ <li>Source separation requires to make assumptions about the
+mixture and sources</li>
+<li>For an (over-)determined instantaneous linear mixture, the
+assumption of independent sources is sufficient</li>
+<li>In all other cases, we need to model the mixture and/or the
+sources</li>
+ </ul>
+
+ <h3 style='margin-top:0.5em;'>Perspectives</h3>
+ <ul>
+ <li>Non-stationary mixtures (adaptive algorithms)</li>
+<li>Informed source separation (e.g. from music score)</li>
+<li>Deep learning techniques</li>
+<li>Objective assessment of audio source separation</li>
+ </ul>
+
+</section>
+<section>
+	<h2>Bibliography</h2>
+	<h3>Audio source separation and Blind source separation</h3>
+	<div class="references" style="float:left; margin-top:-0.7em">
+	<ul><li>Emmanuel Vincent, Tuomas Virtanen, and Sharon Gannot. Audio Source Separation and Speech
+Enhancement. Wiley Publishing, 1st edition, 2018.</li>
+<li>Jean-François Cardoso. Blind signal separation: statistical principles. Proceedings of the IEEE,
+86(10):2009–2025, 1998.</li>
+	</ul>
+</div><br>
+
+		<h3>Independent Component Analysis</h3>
+		<div class="references" style="float:left; margin-top:-0.7em">
+		<ul><li>Pierre Comon. Independent component analysis, a new concept? Signal Processing, 36(3):287 –
+314, April 1994. Special issue on Higher-Order Statistics.</li>
+<li>Pierre Comon and Christian Jutten. Handbook of Blind Source Separation: Independent Component
+Analysis and Applications. Academic Press, Inc. (Elsevier), USA, 1st edition, 2010.</li>
+		</ul>
+		</div>
+		<h3>Informed Source separation</h3>
+		<div class="references" style="float:left; margin-top:-0.7em">
+		<ul><li>Sebastian Ewert and Meinard Müller. Multimodal Music Processing, volume 3, chapter Score-
+Informed Source Separation for Music Signals, pages 73–94. January 2012.</li>
+<li>Simon Leglaive, Roland Badeau, Gael Richard. Multichannel Audio Source Separation with Probabilistic Reverberation Priors. IEEE/ACM Transactions on Audio, Speech and Language Processing,
+Institute of Electrical and Electronics Engineers, 2016, 24 (12), pp.2453-2465.</li>
+		</ul>
+			</div>
+
+		<h3> Multichannel Nonnegative Matrix Factorization for audio source separation</h3>
+		<div class="references" style="float:left; margin-top:-0.7em">
+		<ul><li>Alexey Ozerov and Cédric Févotte. Multichannel nonnegative matrix factorization in convolutive
+mixtures for audio source separation. IEEE Transactions on Audio, Speech, and Language Process-
+ing, 18(3):550–563, 2010.</li>
+
+		</ul>
+			</div>
+
+			<h3>  Multichannel Deep learning audio source separation</h3>
+			<div class="references" style="float:left; margin-top:-0.7em">
+			<ul><li>Aditya Arie Nugraha, Antoine Liutkus, Emmanuel Vincent. Multichannel audio source separation
+with deep neural networks. [Research Report] RR-8740, INRIA. 2015. </li>
+
+			</ul>
+				</div>
+
+</section>
+
+<section>
+	<h2>To go further: Toolboxes</h2>
+	<h3>SOBI algorithm</h3>
+	<ul>
+		<li>
+			<a href="https://github.com/davidrigie/sobi">https://github.com/davidrigie/sobi</a>
+		</li>
+	</ul>
+	<h3>Independent vector analysis, Independent low-rank matrix analysis, FastMNMF</h3>
+	<ul>
+		<li>
+	<a href="https://github.com/LCAV/pyroomacoustics"> https://github.com/LCAV/pyroomacoustics</a></li>
+</ul>
+	<h3 style='margin-top:0.5em;'>Matrix tensor factorization</h3>
+	<ul>
+		<li>
+	<a href="https://github.com/SmartImpulse/Wonterfact"> https://github.com/SmartImpulse/Wonterfact</a>
+</li>
+</ul>
+<h3 style='margin-top:0.5em;'>Deep Learning techniques</h3>
+<ul>
+	<li>
+<a href="https://github.com/deezer/spleeter"> https://github.com/deezer/spleeter</a>
+</li>
+<li>
+<a href="https://sigsep.github.io/open-unmix/"> https://sigsep.github.io/open-unmix/</a>
+</li>
+</ul>
+</section>
+
+
+	</div>
+
+
+
+<div class='footer'>
+	<img src="css/theme/img/logo-Telecom.svg" alt="Logo"/>
+	<div id="middlebox">Audio Source Separation - ATIAM</div>
+	<ul>
+	</ul>
+</div>
+			</div>
+
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: false,
+				slideNumber: true,
+				minScale: 0.1,
+				maxScale: 5,
+				transition: 'none', //
+
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/math-katex/math-katex.js', async: true },
+					{ src: 'plugin/reveald3/reveald3.js' },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+			});
+		</script>
+
+	</body>
+
+</html>
