@@ -1387,6 +1387,352 @@ On a les inégalités suivantes pour des v.a.r. $X, Y$ : </br>
 
 Les définitions, propriétés et résultats sur les variance covariance et moments d'ordre $p$ sont exactement les mêmes que dans le cas discret (c.f. Poly)
 </section>
+
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>V - Théorème de Fubini et Indépendance</h2>
+</section>
+
+<section>
+	<h1>Tribu Produit</h1>
+	On considère $(F, \mathcal{F}, \mu)$ un espace mesurée,  et $(E_1, \mathcal{E}_1) , (E_2, \mathcal{E}_2)$ des espace mesurables, $f_1:F \to E_1$ et $f_2:F \to E_2$ des fonctions mesurables. Egalement : 
+	<center>
+$$			\begin{aligned}
+			f: F &\to  E_1 \times E_2\\
+			  f & \mapsto  
+			 (f_1(x_1), f_2(x_2))
+			  \end{aligned} 
+			  $$
+
+	</center>
+En proba, une variable aléatoire sur $E_1 \times E_2$ est aussi appelé <b>vecteur aléatoire</b>. Définissons la tribu choisie sur $E_1 \times E_2$.
+
+<div class="exemple"> 
+	<div id="title">Définition [tribu produit]</div>
+	La <b>tribu produit</b> sur $E_1 \times E_2$ est définie comme suit :
+<center>
+$$\mathcal{E}_1 \otimes \mathcal{E}_2 = \sigma(\{H_1 \times H_2 : H_1 \in \mathcal{E}_1, H_2 \in \mathcal{E}_2\})$$
+</center>
+C'est la plus petite tribu qui contient les pavés du type $H_1 \times H_2$.
+
+</div>
+
+<p>On a la propriété suivante sur les boréliens : </p>
+
+<div class="exemple"> 
+	<div id="title">Propriété</div>
+
+	Avec la définition précédente, on a : 
+	$\bigotimes_{d=1}^{D}\mathcal{B}(\mathbb{R}) = \mathcal{B}(\mathbb{R}^d)$
+
+
+</div>
+
+
+</section>
+
+<section>
+	<h1>Mesure produit</h1>
+	Un des choix majeurs d'une telle tribu produit est le résultat suivant :
+	<div class="exemple"> 
+		<div id="title">Théorème [mesure produit]</div>
+		Il existe une unique  <b>mesure produit </b> sur $\mathcal{E}_1 \otimes \mathcal{E}_2$  et notée $\mu_1 \otimes \mu_2$ telle que :
+	<center>
+	$$\mu_1 \otimes \mu_2 (H_1 \times H_2) = \mu_1(H_1) \mu_2 (H_2)$$
+	</center>
+	</div>
+	<p><b>Exemple : </b> 
+		Considérons $E_1=E_2=\mathbb{R}$ et $\mu_1=\mu_2=\lambda$ la mesure de Lebesgue </br>
+	$\lambda \otimes \lambda$ est l'unique mesure sur $\mathcal{B}(\mathbb{R}) \otimes \mathcal{B}(\mathbb{R})$ telle que 
+	$\lambda \otimes \lambda (H_1 \times H_2) = \lambda(H_1) \lambda(H_2)$ en particulier : 
+	<center>
+	$$\begin{aligned}
+	\lambda \otimes \lambda ([a_1,b_1] \times [a_2,b_2])  &=(b_1 - a_1)(b_2-a_2)\\
+						   &:=\lambda_2([a_1, b_1]\times [a_2, b_2]) 
+	\end{aligned}
+	$$
+
+
+</center>
+Donc $\lambda \otimes \lambda $ coïncide sur $\mathcal{B}(\mathbb{R}^2)$ avec $\lambda_2$.
+	</p>
+	
+	
+	
+	
+
+</section>
+
+<section>
+	<h1>Théorème de Fubini</h1>
+	Nous énonçons deux théorèmes fondamentaux en intégrations :
+	<div class="exemple"> 
+		<div id="title">Théorème [Fubini-Tonelli et Fubini]</div>
+	<ol>
+		<li><span style="margin-left:-3em;">
+			Soit $f: E_1 \times E_2 \to \mathbb{R}_+$ une fonction mesurable. alors : 
+
+			<center>
+				$$\begin{aligned}
+				\int_{E_1 \times E_2}f d(\mu_1 \otimes \mu_2) &= \int_{E_1} \left( \int_{E_2}f(x,y) d\mu_2(y) \right)d\mu_1(x) \\
+									   &=\int_{E_2} \left( \int_{E_1}f(x,y) d\mu_1(x) \right)d\mu_2(y) ~ \texttt{(Fubini-Tonelli)}
+				\end{aligned}
+				$$
+			
+			
+			</center>
+
+
+		</span></li>
+		<li><span style="margin-left:-3em;"> Soit $f$ telle que $\int |f| d\mu_1 \otimes d\mu_2 < \infty$ alors : 
+			<center>
+		    i) reste vraie  $ \qquad \qquad \qquad \qquad \qquad \quad \texttt{(Fubini)}$
+			
+			
+			</center>
+		
+		</span></li>
+	</ol>
+	</div>
+	<p><b>Preuve : </b> esquisse de i) au tableau. </p>
+</section>
+
+	<section>
+		<h1>Exemples d'application directe du théorème de Fubini</h1>
+		<p><b>Exemples : </b></br>
+			$\rightarrow$ $E_1=E_2=\mathbb{R}, \mu_1 = \mu_2 = \lambda, \lambda \otimes \lambda = \lambda_2$ alors : 
+			</center>$$ \int_{\mathbb{R}^2} f d\lambda_2 = \int_{\mathbb{R}} \left(\int_{\mathbb{R}} f(x,y)dx\right)dy = \int_{\mathbb{R}} \left(\int_{\mathbb{R}} f(x,y)dy\right)dx$$</center>
+
+			$\rightarrow$ $E_1=E_2=\mathbb{R}, \mu_1 = \mu_2 = \sum_{i=0}^{+\infty}\delta_i$ (mesure de comptage sur $\mathbb{N}$) alors :</br>
+			$\quad \triangleright$ $\left(\sum_{i=0}^{+\infty}\delta_i\right)\otimes\left(\sum_{i=0}^{+\infty}\delta_i\right) = \sum_{i,j\in \mathbb{N}^2}\delta_{(i,j)}$ (à la maison) </br>
+			Par Fubini pour $f \geq 0$ on obtient que :  
+		<center>$$ \int_{\mathbb{R}^2} f d\left(\sum_{i,j\in \mathbb{N}^2}\delta_{(i,j)}\right) = \int_{\mathbb{R}} \left(\int_{\mathbb{R}} f(x,y)d\left(\sum_{i=0}^{+\infty}\delta_i\right)(x)\right)d\left(\sum_{i=0}^{+\infty}\delta_i\right)(y)
+			 = \sum_{j\in\mathbb{N}}\sum_{i\in\mathbb{N}} f(i,j)$$</center>
+		</br>
+		$\rightarrow$ $E_1=E_2=\mathbb{R}, \mu_1  = \lambda, \mu_2 = \sum_{i} \delta_i$. Le théorème de Fubini devient alors le théorème de permutation somme-intégrale (à la maison)
+			</p>
+	</section>
+
+<section>
+	<h1>Généralisation des résultats précédents</h1>
+	On peut généraliser sur $(E_1, \mathcal{E}_1) \times \dots \times (E_d, \mathcal{E}_d)$ trivialement : 
+	<p><b>Tribu produit :</b> $\bigotimes_{i=1}^{d}\mathcal{E}_i = \sigma\left(\{H_1 \times \dots \times H_d : H_1 \in \mathcal{E}_1, \dots, H_d \in \mathcal{E}_d\}\right)$</p>
+	<p><b>Mesure produit :</b> $\bigotimes_{i=1}^d\mu_i$ unique mesure telle que: 
+	<center>
+		$$
+		\forall H_1 \in \mathcal{E}_1, \dots, H_d \in \mathcal{E}_d, ~\bigotimes_{i=1}^d\mu_i(H_1 \times \dots H_d) = \prod_{i=1}^{d}\mu_i(H_i)
+		$$
+	</center>
+	</p>
+
+	<p><b>Théorème de Fubini :</b> $f: E_1 \times \dots \times E_d \to \mathbb{R}$ positive ou intégrale p/r à $\bigotimes_{i=1}^d\mu_i$ :
+		<center>
+			
+			$$\begin{aligned}
+			\int_{E_1 \times \dots E_d}f d\bigotimes_{i=1}^d\mu_i &= \int_{E_d} \dots\left( \int_{E_1}f(x_1, \dots, x_d) d\mu_1(x_1) \right) \dots d\mu_d(x_d) \\
+								   &=\int_{E_{\sigma(d)}} \dots\left( \int_{E_{\sigma(1)}}f(x_1, \dots, x_d) d\mu_{\sigma(1)}(x_{\sigma(1)}) \right) \dots d\mu_{\sigma(d)}(x_{\sigma(d)})
+			\end{aligned}
+			$$			
+		</center>
+
+		$\forall \sigma \in \mathfrak{S}_d$ (l'espace des permutations de $\{1,\dots,d\}$)
+	</section>
+ <section>
+	<h1 style="margin-top:-0.5em;">Vecteurs aléatoires réels, marginales et densités</h1>
+	Considérons $(\Omega, \mathcal{F}, \mathbb{P})$ un espace probabilisé et :
+	<center>
+		$$			\begin{aligned}
+					X: \Omega &\to  \mathbb{R}^d\\
+					  \omega & \mapsto  
+					 (X_1(\omega),\dots, X_d(\omega))
+					  \end{aligned} 
+					  $$
+		
+			</center>
+	un vecteur aléatoire réel. $X$ est un vecteur aléatoire réel $\Leftrightarrow \forall i$ $X_i$ est une v.a.r.
+	<p>la loi de $X$ est donnée par : $ \forall H \in \mathcal{B}(\mathbb{R}^d),~ \mathbb{P}_X(H) := \mathbb{P}(X\in H)$
+
+	</p>  
+	<p> Si $X$ est de densité $f_X$ p/r à $\lambda_d$ alors par définition (et que $\lambda_d = \otimes_{i=1}^d\lambda$):
+		<center>
+			$\mathbb{P}_X(H) = \int_{H}f_X(x_1, \dots, x_d)dx_1 \dots dx_d$
+		</center>
+
+	</p>
+	<p>
+		On définit par ailleurs $\mathbb{P}_{X_i} = $ loi marginale de $X_i$. On a alors le résultat suivant :
+	</p>
+	<div class="exemple"> 
+		<div id="title">Propriété</div>
+		Si $X$ admet une densité $f_X$ alors $X_1$ admet pour densité
+
+			<center>
+				$$f_{X_1}(x_1) = \int\dots\int f_X(x_1, \dots, x_d) dx_2 \dots dx_d
+				$$
+			
+			
+			</center>
+
+	</div>
+	<p>Preuve: cas $d=2$</p>
+ </section>
+ <section><h1>Application de Fubini : Indépendance (1/2)</h1>
+ <div class="exemple"> 
+	<div id="title">Définition [indépendance]</div>
+	On dit que $X_1, \dots, X_d$ sont indépendantes ssi $\forall H_1 \in \mathcal{E_1}, \dots, H_1 \in \mathcal{E_d}$ les évènements 
+	$\{X_1 \in H_1\}, \dots, \{X_1 \in H_d\}$ sont indépendants : 
+	<center>
+		$$
+		\mathbb{P}(X_1 \in H_1, \dots, X_d \in H_d) = \prod_{i=1}^{d} \mathbb{P}(X_i \in H_i)
+		$$
+	</center>
+
+</div>
+</p>
+<p>On note $X_1 \perp X_2 \Leftrightarrow X_1$ et $X_2$ indépendants. On a les résultats suivants : </p>
+<div class="exemple"> 
+	<div id="title">Propriétés </div>
+	Les assertions suivantes sont équivalentes avec $X=(X_1, \dots, X_d)$ et $(h_i)_{i\in \{1, \dots, d\}}$ mesurables telle que $h_i(X_i) \geq 0$ ou intégrables : 
+</br><ol>
+		<li><span style="margin-left:-3em;">$X_1 \perp \dots \perp X_d$</span></li>
+		<li><span style="margin-left:-3em;"> $\mathbb{P}_X = \bigotimes_{i=1}^d \mathbb{P}_{X_i}$</span></li>
+		<li><span style="margin-left:-3em;"> $\mathbb{E}[\prod_{i=1}^d h_i(X_i)] = \prod_{i=1}^{d} \mathbb{E}[h_i(X_i)]$</span></li>
+	</ol>
+
+</div>
+
+</section>
+
+<section><h1>Application de Fubini : Indépendance (2/2)</h1>
+On déduit des résultats précédents un corollaire important : 
+<div class="exemple"> 
+	<div id="title">Corollaire</div>
+ $X_1 \perp X_2 \implies \mathrm{Cov}(X_1, X_2) = 0$
+
+</div>
+
+<p>La réciproque est fausse. Soit $X \perp Y$ et $Z=XY$. Alors $X \not\perp XY$ et
+	 $\mathrm{Cov}(X,Z) = \mathbb{E}[X^2Y] = \mathbb{E}[h(X)Y] = 0$ car $X \perp Y$</p>
+
+Deux autres résultats utiles (preuve dans le poly) : 
+<div class="exemple"> 
+	<div id="title">Propriétés</div>
+	On a :</br>
+	<ol>
+		<li><span style="margin-left:-3em;">$X_1 \perp \dots \perp X_d \Leftrightarrow F_X(x_1, \dots, x_d) = \prod_{i=1}^{d} F_{X_i}(x_i)$</span></li>
+		<li><span style="margin-left:-3em;"> Si $X$ admet une densité $f_X$ alors :
+			 <center>
+				$$
+				X_1 \perp \dots \perp X_d \Leftrightarrow f_X(x_1, \dots, x_d) = \prod_{i=1}^{d} f_{X_i}(x_i)
+				$$
+			 </center></span></li>
+
+	</ol>
+ 
+
+</div>
+</section>
+
+<!-- Changement de variables  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VI - Changement de Variables</h2>
+</section>
+
+<section>
+	<h1>Position du problème, Méthode de la fonction muette</h1>
+	Soit $X$ vecteur aléatoire dans $\mathbb{R}^d$  tel que:
+	<ul>
+		<li>$X(\Omega)\subset U \subset \mathbb{R}^d$ où $U$ est un ouvert</li>
+		<li>$X$ admet pour densité $f_X$ par rapport à $\lambda_d$ (mesure de Lebesgue sur $\mathbb{R}^d$)</li>
+		<li>$Y:=\phi(X)$ avec $\phi$ une fonction borélienne sur $\mathbb{R}^d$</li>
+		
+	</ul> 
+
+	<center><b>Question : Comment obtenir, quand-elle existe, la densité $f_Y$ de $Y$ p/r à $\lambda_d$ ?</b></center>
+	Calculons $\mathbb{E}(h(Y)) = \int_{U \subset \mathbb{R}^d} (h\circ \phi)\times f_X d\lambda_d $ avec $h$  positive définie sur $\mathbb{R}^d$. 
+	Supposons que l'on arrive à écrire $\mathbb{E}(h(Y))$ sous la forme $\int_{V \subset \mathbb{R}^d} h\times f_Yd\lambda_d$. Si on pose alors $h=\bold{1}_{H}$ on obtient : 
+	<center>
+	$$
+		\mathbb{E}(\bold{1}_{\{Y \in H\}}) = \mathbb{P}(Y \in H) =  \int_{H \subset \mathbb{R}^d} f_Yd\lambda_d \implies f_Y \text{ densité de } Y \text{ par rapport à } \lambda_d.
+
+	$$
+
+</center>
+$\rightarrow$ Cette procédure s'appelle la <b>méthode de la fonction muette</b>. Elle se résume par : </br>
+<div class="exemple">
+<ol>
+	<li><span style="margin-left:-3em;">Considérer une fonction <b>$h$ positive et définie sur $\mathbb{R}^d$</b></span></li>
+	<li><span style="margin-left:-3em;">écrire $\mathbb{E}(h(Y)) = \int_{U \subset \mathbb{R}^d} (h\circ \phi)\times f_X d\lambda_d = \dots = \int_{V \subset \mathbb{R}^d} h\times f_Yd\lambda_d$</span></li>
+	<li><span style="margin-left:-3em;">La fonction $f_Y$ trouvée précédemment est la densité de $Y$ p/r à $\lambda_d$</span></li>
+</ol>
+</div>
+<p>
+<center>
+	Les $\dots$ dans ii. Sont l'objet du <b>changement de variable</b>.
+</center>
+</p>
+</section>
+
+<section>
+	<h1>Jacobien et Difféomorphisme</h1>
+Rappelons quelques notions d'analyses avec $U,V$ deux ouverts de $\mathbb{R}^d$ et $\phi:U \to V$ telle que $\forall x \in U: \phi(x) = (\phi_1(x),\dots, \phi_d(x))$.
+
+<div class="exemple">
+	<div id="title">Définition [Jacobienne et Jacobien]</div>
+	Pour $\phi$ de classe $\mathcal{C}^1$ (les dérivées partielles existent et sont continues) <b>la jacobienne</b> est définie par :
+	<center>
+		 $\tiny{J_{\phi}(x)=\left(\begin{array}{ccc}
+		\frac{\partial\phi_{1}}{\partial x_{1}}\left(x\right)\\
+		 & \vdots\\
+		\dots & \frac{\partial\phi_{i}}{\partial x_{j}}\left(x\right) & \dots\\
+		 & \vdots\\
+		 &  & \frac{\partial\phi_{d}}{\partial x_{d}}\left(x\right)
+		\end{array}\right)}$
+		
+	</center> 
+	<b>Le jacobien de $\phi$ en $x$</b> est alors $|J_{\phi}|(x)=\det(J_{\phi}(x))$
+	</div>
+<p>$\rightarrow$ $\phi$ bijective, de classe $\mathcal{C}^1$ et d'inverse de classe $\mathcal{C}^1$ est un $\mathcal{C}^1$- difféomorphisme. </br>
+
+$\rightarrow$ De plus :  $\phi$ de classe $\mathcal{C}^1$ est un difféomorphisme $\Leftrightarrow \forall x, |J_{\phi}|(x) \neq 0$  et alors :
+	<center style="margin-top:-0.3em;">
+	$$J_{\phi^{-1}} = \frac{1}{J_\phi \circ \phi^{-1}} \qquad \left( J_{\phi^{-1}}(u) = [J_\phi]^{-1}(x)_{\mid x = \phi^{-1}(u) } \right) \implies |J_{\phi^{-1}}| = \frac{1}{|J_\phi| \circ \phi^{-1}}$$
+</center>
+</p>
+</section>
+<section>
+	<h1>Théorème de changement de variables</h1>
+
+	<div class="exemple">
+		<div id="title">Théorème [Changement de variables]</div>
+        Soit $U,V \subset \mathbb{R}^d$ deux ouverts et $\phi:U\to V$ un difféomorphisme. Pour toute fonction $f$ positive borélienne et définie  sur V,
+		<center>
+			$$
+			\int_{U}f \circ \phi = \int_{V}\frac{f}{||J_{\phi}| \circ \phi^{-1}|}  
+			$$
+		</center>
+		</div>
+	<p><b>Application : </b> pour la méthode de la fonction muette, on a alors : 
+	<center>
+		$$
+		f_Y = \frac{f_X\circ \phi^{-1}}{||J_{\phi}|\circ \phi^{-1}|}\bold{1}_{V} = f_X\circ \phi^{-1}\times |\det(J_{\phi^{-1}})|\bold{1}_{V}
+		$$
+	</center>
+	</p>
+	En particulier on a :
+
+	<div class="exemple">
+		<div id="title">Propriété</div>
+		Si on a un vecteur aléatoire $Y=AX+B$ avec $A$ une matrice inversible et $B$ un vecteur déterministe alors : 
+		<center>
+			$$
+			f_Y(y)=\frac{1}{|\det(A)|}f_X(A^{-1}(y-B))
+			$$
+		</center>
+		</div>
+		<p><b>Preuve :</b> Au tableau</p>
+</section>
+
+
 </div>
 
 <div class='footer'>
