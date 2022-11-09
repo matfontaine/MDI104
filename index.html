@@ -1732,6 +1732,324 @@ $\rightarrow$ De plus :  $\phi$ de classe $\mathcal{C}^1$ est un difféomorphism
 		<p><b>Preuve :</b> Au tableau</p>
 </section>
 
+<!-- Fonction caractéristique  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VII - Fonction Caractéristique</h2>
+</section>
+
+<section><h1>Motivations et prérequis</h1>
+La fonction caractéristique est un outils très utile en pratique pour :
+<ul>
+	<li>Déterminer la loi de somme de v.a. indépendantes</li>
+	<li>Développer le théorème central limite</li>
+	<li>Calculer des moments de tout ordre ($\mathbb{E}(X^p)$ quand ils existent</li>
+	<li>Développer la théorie autour des vecteurs Gaussiens</li>
+</ul>
+<p>Au préalable, nous définissons les fonctions mesurables à valeur dans $\mathbb{C}$ comme suit : 
+<ul>
+	<li>$f=f_\Re + if_\Im$ à valeurs dans $\mathbb{C}$ est mesurables $\Leftrightarrow f_\Re, f_\Im$ sont mesurables </li>
+	<li>$f$ est intégrable p/r $\mu \Leftrightarrow \int|f|d\mu < \infty $ et alors : 
+		<center>
+			$$
+			\int fd\mu := \int f_\Re d\mu + i \int f_\Im d\mu 
+			$$
+	    </center>
+	</li>
+	<li>Le théorème de convergence dominée reste valable en remplaçant la valeur absolue par le module d'un nombre complexe (linéarité etc.)</li>
+</ul>
+
+
+</p>
+
+
+	Enfin, pour deux vecteurs colonnes $\bold{a},\bold{b} \in \mathbb{R}^d,$ on définit le produit scalaire $<.,.>$ comme suit : 
+	<center style="margin-top:-1.2em;">
+		$$
+		<\bold{a},\bold{b}> = \sum_{k=1}^d a_kb_k = \bold{a}^\top \bold{b}
+		$$
+	</center>
+
+
+</section>
+
+<section>
+	<h1>Définition et premières propriétés</h1>
+	On considère $(\mathbb{R}^d, \mathcal{B}(\mathbb{R}^d), \mu)$ un espace mesurable avec $\mu$ finie ou de probabilité.
+
+	<div class="exemple">
+		<div id="title">Définition [Fonction Caractéristique]</div>
+		La fonction caractéristique de $\mu$ est définie par 
+		<center>
+			$$
+			\forall \bold{t} \in \mathbb{R}^d, \varphi_{\mu}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}d\mu(\bold{x})
+			$$
+		</center>
+		</div>
+	<p><b>Remarque: </br></b>
+		$ \rightarrow \varphi$ est bien définie puisque $\mu$ est finie ou de probabilité et $|e^{i<\bold{t}, \bold{x}>}| = 1$</br>
+		$\rightarrow$ si $\mu$ est de probabilité, $\forall \bold{t} \in \mathbb{R}^d, |\varphi_\mu(t)| \leq \int |e^{i<\bold{t}, \bold{x}>}|d\mu(\bold{x}) = 1$
+	</p>
+
+	On a de plus la propriété suivante : 
+
+	<div class="exemple">
+		<div id="title">Propriété</div>
+		Soit $\mu$ de probabilité. Alors $\varphi_{\mu}$ est continue. 
+		</div>
+	<p><b>Preuve : </b> Au tableau. </p>
+</section>
+<section><h1>Fonction caractéristique d'un vecteur aléatoire</h1>
+Soit $X$ un vecteur aléatoire réel sur $(\Omega, \mathcal{F}, \mathbb{P})$ de dimension $d$ et $\mathbb{P}_{X}$ sa loi. 
+<div class="exemple">
+	<div id="title">Définition</div>
+	La fonction caractéristique d'un vecteur aléatoire réel $X$ noté $\varphi_{X}$ (rarement $\varphi_{\mathbb{P}_X})$ est donnée par 
+	<center>
+		$$
+		\forall \bold{t} \in \mathbb{R}^d, \varphi_{X}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}d\mathbb{P}_{X}(\bold{x}) = \mathbb{E}(e^{i<\bold{t}, X>})
+		$$
+	</center>
+	Si $X$ admet p/r à $\lambda_d$ une densité $f$ pour tout  $\bold{x} = (x_1, \dots, x_d) \in \mathbb{R}^d$. Alors : 
+	<center>
+		$$
+		\forall \bold{t} \in \mathbb{R}^d, \varphi_{X}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}f(x_1,\dots, x_d)dx_1, \dots, dx_d
+		$$
+	</center>
+	</div>
+
+	<p>
+		Ainsi, pour un vecteur aléatoire admettant une densité, $\varphi_X$ peut-être vu comme la transofrmée de Fourier de $f(-x)$.
+	</p>
+
+	<p><b>Exemple</b> : Soit $X:\Omega \to \mathbb{R}^d$ et $Y=AX+\bold{b}, A\in \mathbb{R}^ {m\times d}, \bold{b} \in \mathbb{R}^m$.  Pour $\bold{u} \in \mathbb{R}^m$ : 
+
+		<center>
+
+			$$\begin{aligned}
+			\varphi_{Y}(\bold{u}) &=\mathbb{E}(e^{i<\bold{u}, Y>}) =\mathbb{E}(e^{i<\bold{u}, AX+\bold{b}>}) = \mathbb{E}(e^{i< A^{\top} \bold{u}, X >})e^{i<\bold{u}, \bold{b}>}   \\
+			\end{aligned}	
+			$$
+		</center>
+
+    Soit $\boxed{\varphi_{AX+\bold{b}}(\bold{u}) =\varphi_{X}(A^\top \bold{u})e^{i< \bold{u}, \bold{b}>}}$
+	</p>
+</section>
+
+<section><h1>Caractérisation de la loi</h1>
+On a le théorème suivant (admis) : 
+
+<div class="exemple">
+	<div id="title"> Théorème [Caractérisation de la loi]</div>
+	
+	Soient $\mu,\nu$ deux mesures de probabilités sur $\mathbb{R}^d$. $\varphi_\mu = \varphi_\nu \Leftrightarrow \mu = \nu$
+	</div>
+
+<p>On peut en déduire le corollaire suivant : </p>
+
+<div class="exemple">
+	<div id="title"> Corollaire</div>
+	
+	Soit $X = [X_1, \dots, X_d]^\top$. alors : 
+	<center>
+		$$ X_1 \perp \dots \perp X_d \Leftrightarrow \forall \bold{t} = (t_1, \dots, t_d) \in \mathbb{R}^d, \varphi_X(\bold{t}) = \prod _{i=1}^{d} \varphi_{X_i}(t_i)$$
+	</center>
+	</div>
+	<p><b>Preuve :</b> Au tableau. </br>
+		<b>Exercice : </b> Soit $X \sim \mathcal{N}(0,1)$
+	<ul>
+		<li> $\forall t \in \mathbb{R}$ montrer que $\varphi^\prime_{X}(t) = -t \varphi_X(t)$</li>
+		<li>Résoudre l'équation précédente et en déduire que $\varphi_{X}(t) = e^{-t^2/2}$</li>
+		<li>En remarquant que $Z \sim \mathcal{N}(m, \sigma^2) \Leftrightarrow Z = \sigma X + m$ montrer que 
+			<center>$\varphi_{Z}(t) = e^{itm}e^{-\sigma^2t^2/2}$</li>
+	</ul>
+	</p>
+
+</section>
+<section>
+	<h1>Calculs des moments (1/2)</h1>
+Soit $X: \Omega \to \mathbb{R}^d$ un vecteur aléatoire réel d'ordre $p \in \mathbb{N}^\star$ (i.e. $\mathbb{E}(|X_i|^p) < \infty, \forall i$)
+<div class="exemple">
+<div id="title"> Propriété</div>
+	On a les résultats suivants :</br>	
+    $\rightarrow$ Si $d=1$, alors $\varphi_X$ est de classe $\mathcal{C}^p$ et  la dérivée p-ème $\varphi_X^{(p)}$ de $\varphi_X$ vérifie : 
+	<center>
+		$$ \varphi_X^{(p)}(t) = \mathbb{E}[i^p X^p e^{i <t,X>}]$$
+	</center>
+	En particulier : 
+	<center>
+	$\boxed{\mathbb{E}[X^p] = \frac{\varphi_X^{(p)}(0)}{i^p}}$
+    </center>	
+
+	$\rightarrow$ Si $d>1$, alors pour $X=[X_1, \dots, X_d]^\top, t=[t_1, \dots, t_d]$ et $i_1, \dots i_d \in \llbracket 1,d \rrbracket$ : 
+
+	<center>
+		$$\frac{\partial^p \varphi_X}{\partial t_{i_1} \dots \partial t_{i_p}} (\bold{t}) = \mathbb{E}(i^p X_{i_1} \dots X_{i_p}e^{i <\bold{t}, X>})$$
+		</center>
+
+	En particulier : 
+	<center>
+		$\boxed{\mathbb{E}[X_{i_1} \dots X_{i_p}] = \frac{\frac{\partial^p \varphi_X}{\partial t_{i_1} \dots \partial t_{i_p}} (\bold{0})}{i^p}}$ 
+		</center>	
+
+	
+</div>
+<p><b>Preuve : </b> Rapide esquisse pour $d=p=1$</p>
+</section>
+
+<section>
+	<h1>Calculs des moments (2/2)</h1>
+	<p><b>Application : </b> Soit $X \sim \mathcal{N}(0,1)$</p> Alors: </br>
+	<ul>
+		<li>$\mathbb{E}[X] = \varphi_X^\prime(0)/i =  -0 \times e^{-0^2 /2} /i = 0 $</li>
+		<li>De même on a $\mathbb{E}[X^2] = 1, \mathbb{E}[X^3]=0,\mathbb{E}[X^4]=2$ etc...</li>
+
+	</ul>
+</section>
+
+
+<!-- Vecteurs Gaussiens  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VIII - Vecteurs Gaussiens</h2>
+</section>
+
+
+<section>
+	<h1>Espérance/Covariance d'un vecteur aléatoire (1/2)</h1>
+	On considère $X=(X_1, \dots, X_d):\Omega \to \mathbb{R}^d$ un vecteur aléatoire réel. 
+	<p>Afin de définir les vecteurs Gaussiens, nous allons d'abord définir l'espérance et la covariance d'un vecteur aléatoire : </p>
+
+	<div class="exemple">
+		<div id="title"> Définition [Espérance et covariance]</div>
+			On définit <b> l'espérance d'un vecteur $X$ </b> comme : 
+			<center>
+				$$
+				\mathbb{E}[X] = (\mathbb{E}[X_1], \dots, \mathbb{E}[X_d])^\top
+				$$
+			</center>
+		
+		   <b>La covariance dun vecteur $X$</b> est définie comme la matrice suivante :
+		   <center>
+			$$
+			\mathrm{Cov}(X) = \left(\begin{array}{cccc}
+			\mathrm{Cov}\left(X_{1},X_{1}\right) & \dots & \dots & \mathrm{Cov}\left(X_{1},X_{d}\right)\\
+			\vdots & \vdots & \vdots & \vdots\\
+			\mathrm{Cov}\left(X_{d,}X_{1}\right) & \dots & \dots & \mathrm{Cov}\left(X_{d,}X_{d}\right)
+			\end{array}\right)
+			$$
+		   </center> 	
+		</div>
+<p><b>Remarques : </b>
+<ul>
+	<li>$\mathbb{E}(AX+b) =  A\mathbb{E}(X) + b$</li>
+	<li>$\mathrm{Cov}(X)$ est symétrique ($\mathrm{Cov}(X,Y) = \mathrm{Cov}(Y,X)$)</li>
+	<li>Si $X_1, \dots, X_d$ sont décoréllées alors $\mathrm{Cov}(X)=\mathrm{Diag}(\{\mathrm{Var}(X_i)\}_{i \in \llbracket 1, d\rrbracket})$</li>
+</ul>
+</p>
+
+</section>
+
+<section>
+	<h1>Espérance/Covariance d'un vecteur aléatoire (2/2)</h1>
+	Nous donnons quelques propriétés sur la covariance. $X_c := X - \mathbb{E}(X)$ désigne le vecteur recentré.
+
+	<div class="exemple">
+		<div id="title"> Propriétés</div>
+		On a les résultats suivants  sur la covariance : </br>
+		<ol style="margin-top:0.5em;">
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(X) = \mathbb{E}(X_cX_c^\top)$</span></li>
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(AX+b) = A\mathrm{Cov}(X)A^\top$</span></li>
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(X)$ est semi-définie positive</span></li>
+			<li><span style="margin-left:-3em;">$X \perp Y \implies \mathrm{Cov}(X+Y) = \mathrm{Cov}(X) + \mathrm{Cov}(Y)$ </span></li>
+		</ol>	
+		</div>
+		<p><b>Preuve:</b> Au tableau.</p>
+</section>
+<section>
+<h1>Vecteur Gaussien : Définition et Premières Propriétés</h1>	
+<p><b>Rappel : </b>
+La loi gaussienne $\mathcal{N}(m, \sigma^2)$ admet pour densité $f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-m)^2}{2\sigma^2}}$ et fonction caractéristique $\varphi (t) = e^{itm}e^{-\frac{\sigma^2t^2}{2}}$.
+</p>
+
+<div class="exemple">
+	<div id="title"> Définition [vecteur gaussien]</div>
+	On  dit que $X:\Omega \to \mathbb{R}^d$ est un <b>vecteur gaussien</b> (VG) si $\forall \bold{a} \in \mathbb{R}^d, <\bold{a}, X>$ suit une loi gaussienne. 	
+	</div>
+
+<p>	On a alors les propriétés suivantes :</p>
+
+<div class="exemple">
+	<div id="title"> Définition [vecteur gaussien]</div>
+	On a les résultats suivants  pour $X=(X_1, \dots, X_d)$ une VG : </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$\forall k \in \llbracket 1,d \rrbracket, X_k$ est une variable gaussienne</span></li>
+		<li><span style="margin-left:-3em;">Tout sous vecteur $(X_{i_1}, \dots, X_{i_m})$ est gaussien</span></li>
+	</ol>		
+	</div>
+<p><b>Preuve : </b> Au tableau.</p>
+</section>
+<section><h1>Fonction Caractéristique et Indépendance</h1>
+La propriété suivante nous permet de caractériser les vecteur Gaussiens.
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Les assertions suivantes sont équivalentes :  </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$X$ est un VG d'espérance $\bold{m}\in \mathbb{R}^d$ et de covariance $\mathrm{Cov}(X) = \Sigma \in \mathbb{R}^{d\times d}$</span></li>
+		<li><span style="margin-left:-3em;">$\forall t \in \mathbb{R}^d, \varphi_{X}(\bold{t}) = e^{i<\bold{t},\bold{m}>}e^{\frac{-\bold{t}^\top\Sigma\bold{t}}{2}}$</span></li>
+	</ol>
+<p>On écrira alors $X \sim \mathcal{N}_{d}(\bold{m}, \Gamma)$</p>
+	</div>
+
+<p><b>Preuve : </b> Au tableau.</p>
+
+On a alors le résultat suivant sur l'indépendance de variables gaussiennes : 
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Les assertions suivantes sont équivalentes avec $\forall k \in \llbracket 1, d\rrbracket, X_k \sim \mathcal{N}(m_k,\sigma_k^2)$ :  </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$X_1 \perp \dots \perp X_d$ et sont des variables gaussiennes</span></li>
+		<li><span style="margin-left:-3em;">$X=(X_1,\dots,X_d) \sim \mathcal{N}_{d}\left(\bold{m},\mathrm{Diag}[\{\sigma_k\}_{k \in \llbracket 1, d \rrbracket}]\right)$
+         avec $\bold{m}=(m_1, \dots,m_d)^\top$
+
+		</span></li>
+	</ol>
+
+	<p><b>Preuve : </b> Au tableau.</p>
+	</div>
+
+</section>
+
+<section><h1>Transformation Affine</h1>
+	<div class="exemple">
+		<div id="title"> Théorème</div>
+		
+		Si $X \sim \mathcal{N}_d (\bold{m}, \Sigma)$ alors $AX+\bold{b} \sim \mathcal{N}_d(A\bold{m} + \bold{b}, A\Sigma A^\top)$
+	
+
+		</div>
+		<p><b>Preuve : </b> Au tableau.</p>
+	<p><b>Exemple :</b> Exercice 41</p>
+</section>
+<section>
+<h1>Densité d'un vecteur Gaussien</h1>
+On a le résultat suivant : 
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Si $X\sim\mathcal{N}_{d}(\bold{m},\Sigma)$ avec $\Sigma$ définie positive (et donc $\Sigma$ inversible). Alors, $X$  admet pour densité :  </br>
+	<center>
+		$$
+		f_X(\bold{x}) = \frac{1}{\sqrt{(2\pi)^d \det \Sigma}}\exp\left(-\frac{1}{2}(\bold{x}-\bold{m})^\top\Sigma^{-1}(\bold{x}-\bold{m})\right)
+		$$
+	</center>
+
+	</div>
+
+	<p><b>Preuve : </b> Au tableau.</p>
+
+	<p><b>Remarque : </b> Si $\Sigma$ n'est pas inversible, alors $X$ n'admet pas de densité p/r à $\lambda_d$.</p>
+</section>
+
 
 </div>
 
