@@ -2275,6 +2275,203 @@ Si $X\perp Y$ (avec $Y$ intégrable ou positive) alors :
 </section>
 
 
+<!-- Convergences en loi -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>X - Convergence de variables aléatoires</h2>
+</section>
+
+<section>
+	<h1>Convergence presque sûre et en probabilité (1/2)</h1> 
+	<div class="exemple">
+		<div id="title"> Définition [Convergence presque sûre, Convergence en probabilité]</div>
+		Soit $(X_n)_n,X$ des v.a.r. sur $\Omega \to \mathbb{R}^d$. Alors : 
+		<ol style="margin-top:0.5em;">
+			<li><span style="margin-left:-3em;"><b>$X_n$ converge presque sûrement vers $X$</b> 
+				si
+				<center> $$\mathbb{P}(\lim_{n\to +\infty} (X_n)=X) = 1$$ 
+				</center>
+				(i.e. $\forall \omega ~\mathbb{P}\text{-pp}, X_n(\omega) \to X(\omega)$). On note alors  $X_n \overset{p.s.}{\to} X$.	
+			</span></li>
+			<li><span style="margin-left:-3em;"><b>$X_n$ converge en probabilité vers $X$</b> 
+				si 
+				<center>
+					$$\forall \epsilon >0, \lim_{n\to +\infty} \mathbb{P}(||X_n - X|| >\epsilon) = 0$$	
+				
+	</center>	On note alors  $X_n \overset{\mathbb{P}}{\to} X$.
+			</span></li>
+		</ol>
+		</div>
+
+
+<p>On a la propriété suivante :</p> 
+
+<div class="exemple">
+	<div id="title"> Propriété </div>
+	La convergence presque sûre implique la convergence en probabilité .
+	</div>
+	<p><b>Preuve : </b> esquisse au tableau.</p>
+</section>
+
+<section><h1>Convergence presque sûre et  en probabilité (2/2)</h1>
+<b>Contre-exemple : </b> convergence en probabilité mais pas convergence presque sûre.</br>
+
+Soit $([0,1], \mathcal{B}([0,1]), \lambda)$ et les variables aléatoires : 
+<center>
+$$
+Y_{2^n,j}(\omega) = \bold{1}_{]\frac{j}{2^n}, \frac{j+1}{2^n}]}(\omega), \quad j \in \llbracket 0, 2^n-1\rrbracket , n\geq 1\\
+
+$$
+$$
+X_p=
+\begin{cases}
+Y_{2^n,j} & \text{si } p = 2^n +j, j \in \llbracket 0, 2^n-1\rrbracket , n\geq 1 \\
+0 & \text{sinon}
+\end{cases}
+$$
+</center>
+Autrement dit, 
+<center>
+$$
+X_p(\omega)=
+\begin{cases}
+1 & \text{ si } \omega \in  ]\frac{j}{2^n}, \frac{j+1}{2^n}]\\
+0 & \text{sinon}
+\end{cases}
+$$
+</center>
+
+Ces valeurs étant pris alernativement (on pourrait extraire une sous suite qui convient), on a $\lim \inf _{n \to \infty} X_n(\omega) = 0$ et $\lim \sup_{n \to \infty}X_n(\omega) = 1$. 
+Il est donc clair que $X_n(\omega)$ ne converge pas p.s. . En revanche pour tout $\epsilon\in]0,1[$ on a : 
+
+<center>
+	$$
+	\mathbb{P}(|X_p| \geq \epsilon) = \int_{0}^{1}\bold{1}_{|X_p| \geq \epsilon}d\lambda(\omega) = \lambda(]\frac{j}{2^n}, \frac{j+1}{2^n}]) = \frac{2^{-n}}{1} \underset{p\to \infty}{\to} 0
+	$$
+</center>
+
+En effet si $p \to \infty$ alors $n$ aussi. Donc la convergence en probabilité est assurée.
+</section>
+
+<section>
+
+	<h1>Propriété de continuité</h1>
+	On admet les propriétés suivante (connue ausi sous le nom de "mapping theorem")
+	<div class="exemple">
+		<div id="title"> Propriété </div>
+		<ol style="margin-top:0.5em;">
+			<li><span style="margin-left:-3em;">Soit $X_n \overset{p.s.}{\to} X$ et $f:\mathbb{R}^d \to \mathbb{R}^{m}$ continue. Alors		
+				<center>
+					$$f(X_n) \overset{p.s.}{\to} f(X)$$
+				</center>
+			</span></li>
+			<li><span style="margin-left:-3em;">On a le même résultat pour la convergence en probabilité.
+			</span></li>
+		</ol>
+		</div>
+</section>
+
+<section>
+	<h1>Loi forte, loi faible des grands nombres</h1>
+On a le théorème suivant sur la convergence presque sûre de somme de v.a. 
+<div class="exemple">
+	<div id="title"> Théorème[Loi forte des grands nombres] </div>
+	Soit $(X_n)$ i.i.d. telle que $\mathbb{E}(||X_1||) < \infty$. Alors : 
+	<center>
+		$$
+		\frac{1}{n} \sum_{i=1}^n X_i  \overset{p.s.}{\to} \mathbb{E}(X_1)
+		$$
+	</center>
+	</div>
+<p>Ce théorème ne sera pas démontré ici (cf. <a href="https://www.techno-science.net/glossaire-definition/Loi-forte-des-grands-nombres-page-2.html">ici</a> pour une preuve)</p>. 
+Une version avec des <span style="color:red">hypothèses et résultats plus faible en rouge</span>, appellée la loi faible des grands nombres, existe également : 
+
+<div class="exemple">
+	<div id="title"> Théorème[Loi faible des grands nombres] </div>
+	Soit $(X_n)$ i.i.d. telle que $\color{red}{\mathbb{E}(||X_1||^2) < \infty}$. Alors : 
+	<center>
+		$$
+		\frac{1}{n} \sum_{i=1}^n X_i  \color{red}{\overset{\mathbb{P}}{\to}} \color{black}{\mathbb{E}(X_1)}
+		$$
+	</center>
+	</div>
+	<p><b>Preuve: </b> Au tableau (cas dans $\mathbb{R}$)</p>
+	<p><b>Applications : </b> Au tableau</p>
+
+</section>
+
+<section>
+<h1>Convergence en loi (ou en distribution)</h1>	
+
+<div class="exemple">
+	<div id="title"> Définition[Convergence en loi/distribution] </div>
+	Soit $(X_n)_n,X$ des v.a.r. sur $\Omega \to \mathbb{R}^d$. Alors <b>$X_n$ converge en loi vers $X$</b> 
+			si
+			<center> $$F_{X_n}(x) \to F_X(x) \qquad \forall x\text{ point de continuité de } F_X$$  
+			</center>
+			On note alors  $X_n \overset{\mathscr{L}}{\to} X$.	
+	</div>
+<p><b>Remarque :</b> dans le cas discret : $X_n \overset{\mathscr{L}}{\to} X \Leftrightarrow \forall k \in \mathbb{N}, \mathbb{P}(X_n=k) \underset{n\to \infty}{\to} \mathbb{P}(X=k)$</p>
+<p><b>Exemple : </b> $X_n(\omega)= \frac{1}{n}$ Alors on n'a pas $\lim_{n\to \infty}F_{X_n}(x) = F_{X}(x)$ pour $x=0$. Mais ce point est discontinue donc la définition de C.V. en loi reste valable et
+$X_n \overset{\mathscr{L}}{\to} 0$ </p>
+<p><b>Exercice : </b> $X_n \sim \mathcal{B}(n, \frac{\lambda}{n})$ : 
+	<ol>
+		<li> Calculer $\ln[\mathbb{P}(X_n=k)]$ et montrer que $\ln[\mathbb{P}(X_n=k)] \underset{n\to\infty}{=} -\lambda + \ln \frac{\lambda^k}{k!} + \circ(1)$</li>
+		<li>Déterminer alors $\lim_{n \to \infty}(\mathbb{P}(X_n=k))$</li>
+	</ol>
+</p>
+<div class="exemple">
+	<div id="title"> Propriété </div>
+	<center>
+	$$ X_n \overset{p.s.}{\to} X\implies X_n \overset{\mathbb{P}}{\to} X \implies X_n \overset{\mathscr{L}}{\to} X$$
+</center>
+	</div>
+
+</section>
+
+<section>
+<h1>Caractérisation de la CV en loi</h1>
+
+
+<div class="exemple">
+	<div id="title"> Propiétés </div>
+	Les propriétés suivantes sont équivalentes : 
+<ol style="margin-top:0.5em;">
+	<li><span style="margin-left:-3em;">$X_n \overset{\mathscr{L}}{\to} X$</span></li>
+	<li><span style="margin-left:-3em;">$\forall f:\mathbb{R}^n \to \mathbb{R}$ continue et bornée, $\mathbb{E}[f(X_n)] \to \mathbb{E}[f(X)]$</span></li>
+	<li><span style="margin-left:-3em;">$\forall t \in \mathbb{R}^n, \varphi_{X_n}(t) \overset{\mathscr{L}}{\to} \varphi_{X}(t)$</span></li>
+	<li><span style="margin-left:-3em;">$\forall H \in \mathbb{B}^{\mathbb{R}^n}$ tel que $\mathbb{P}(X \in \partial H) =0 (\text{frontière : } \partial H = \bar{H} \backslash \circ{H})$</br>
+	$\mathbb{P}(X_n \in \mathbb{H}) \to \mathbb{P}(X \in H)$	
+	</span></li>
+</ol>
+</div>
+
+<p>Le "mapping theorem" est également valable pour les convergences en loi</p>
+
+<div class="exemple">
+	<div id="title"> Propiété </div>
+ Soit $X_n \overset{\mathscr{L}}{\to} X$ et $f$ continue. Alors $$f(X_n) \overset{\mathscr{L}}{\to} f(X)$$
+</ol>
+</div>
+
+</section>
+
+
+<section>
+<h1>Théorème central limite</h1>
+On a enfin le théorème de convergence suivant sur une somme de variables centrées i.i.d. 
+
+<div class="exemple">
+	<div id="title"> Théorème [central limite] </div>
+Soit $(X_n)_n$ une suite de v.a. i.i.d. sur $\Omega \to \mathbb{R}^d$ et telles que $\mathbb{E}(||X_1||^2) < \infty$, alors 
+<center>
+	$$
+	\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i - \mathbb{E}(X_1)) \overset{\mathscr{L}}{\to}\mathcal{N}(0, \mathrm{Cov}(X_1))
+	$$
+</center>
+</div>
+<p><b>Preuve : </b> Dans le cas réel centrée réduit.</p>
+</section>
+
 </div>
 
 <div class='footer'>
