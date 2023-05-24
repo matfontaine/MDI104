@@ -1386,3 +1386,4 @@ If you want to include math inside of a presentation written in Markdown you nee
 MIT licensed
 
 Copyright (C) 2019 Hakim El Hattab, http://hakim.se
+# TAD-GAN
