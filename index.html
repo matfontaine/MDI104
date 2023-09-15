@@ -80,7 +80,7 @@
 					<ul>
 						<li>Probabilités Discrète, Théorie de la mesure (TH 1-2, Chap 1, 2.1 - 2.3)</li>
 						<li>Intégration: Intégrale de Lebesgue (TH 3-4, Chap. 3.1, 2.4, 3.2, 3.3.1)</li>
-						<li>Variables Aléatoires et Espérance (TH 5-6, Chap. 4.1, Chapitre 4.2)</li>
+						<li>Variables Aléatoires et Espérance (TH 5-6, Chap. 4.1, Chap. 4.2)</li>
 						<li><font color ="red">CC1 (TH 7, 22/09)</font></li>
 						<li>Correction CC1 + TD VA & Espérance (TH 8)</li>
 						<li>Théorème de Fubini et Indépendance (TH 9-10, Chap. 3.4)</li>
@@ -861,7 +861,157 @@
 					Ainsi deux variable aléatoires réelles (v.a.r.) qui ont même fonction de répartition suivent la même loi. 
 				</section>
 
- 
+				<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+					<h2 id='coverh2'>IV - Variables Aléatoires et Espérance</h2>
+				
+				</section>
+				
+				<section>
+					<h1>Rappels : Variables aléatoires</h1>
+				On considère $(\Omega, \mathcal{F}, \mathbb{P})$ un espace de probabilité et $(E, \mathcal{E})$ un espace probabilisable. On rappelle que : 
+				
+				<ul>
+					<li>$X$ est une variable aléatoire (v.a.) $\Leftrightarrow$ $X : \Omega \to E$ est mesurable. </li>
+					<li>La loi de la v.a. $X$, notée $\mathbb{P}_{X}$, est la mesure image de $\mathbb{P}$ i.e. $\mathbb{P}_{X}=\mathbb{P} \circ X^{-1}$:
+						<center>$$
+						\begin{aligned}
+						\mathbb{P}_{X}: \mathcal{E} &\to  [0,1]\\
+						  H & \mapsto \mathbb{P}(X\in H) = \mathbb{P}(X^{-1}(H))
+						  \end{aligned} 
+						$$
+					</center>
+					</li>
+				
+				
+					<!-- <li> Si $\mathbb{P}_{X}$ est une mesure à densité par rapport à une mesure $\mu$, il existe alors $f_X \geq 0$ telle que :
+				
+						<center>
+							$\forall H \in \mathcal{E},~ \mathbb{P}_{X}(H) = \mathbb{P}(X\in H) = \int_{x \in H} f_X(x)d\mu(x) $
+						</center>
+					</li>
+					<li>On a démontré en TD que $f$ est mesurable positive et que $\int f_X d\mu = 1$</li>
+					<li>Le lien entre fonction de répartition </li> -->
+				</ul>
+				
+				Dans le cas où $(E, \mathcal{E})=(\mathbb{R}^d, \mathcal{B}(\mathbb{R}^d))$ :
+				<ul>
+					<li>$X$ est une variable aléatoire réelle (v.a.r) $\Leftrightarrow$ $X : \Omega \to \mathbb{R}^{d}$ est mesurable. </li>
+					<li>On a la fonction de répartition de $X$ pour $x=(x_1,\dots,x_d) \in \mathbb{R}^{d}$ :
+						<center>
+						$$F_X(x) = \mathbb{P}(X \leq x) = \mathbb{P}(X \in ]-\infty, x_1] \times \dots \times ]-\infty, x_d])
+						$$
+					</center></li>
+					<li> $F_X = F_Y \Leftrightarrow \mathbb{P}_{X} = \mathbb{P}_{Y}$ (même loi $\Leftrightarrow$ même fonction de répartition)</li>
+				</ul> 
+				</br> On rappelle (cf. poly) :
+				<ul>
+					<li>$F_X$ est croissante, continue à droite et $\underset{x \to -\infty}{\lim} F(x) = 0, \underset{x \to +\infty}{\lim} F(x) = 1$</li>
+					<li>$F_X(x^-) = \mathbb{P}(X < x)$</li>
+					<li>$F_X(x^-) + \mathbb{P}(X=x) = F_X(x)$</li>
+				</ul>
+				</section>
+				
+				<section>
+				<h1>Variables aléatoires à densité</h1>
+				On rappelle qu'on a vu en TD : 
+				
+				</ul>
+				D'après ce que l'on a vu en TD. On peut donner la définition suivante : 
+				<div class="exemple"> 
+					<div id="title">Définition [densité de probabilité d'une variable aléatoire]</div>
+						Si $\mathbb{P}_{X}$ est une mesure à densité par rapport à une mesure $\mu$, il existe alors $f_X$ mesurable positive vérifiant $\int f_X d\mu = 1$ et :
+				
+				<center>				$\forall H \in \mathcal{E},~ \mathbb{P}_{X}(H) = \mathbb{P}(X\in H) = \int_{x \in H} f_X(x)d\mu(x) $</center>
+				On dit que $f_X$ est <b>la densité de probabilité</b> de $X$.
+				
+				</div>
+				
+				On a par ailleurs un lien entre la densité de probabilité de $f_X$ et la fonction de répartition $F_X$ :  
+				
+				<div class="exemple"> 
+					<div id="title">Propriété </div>
+					Si $X$ est une v.a.r. dont $F_X$ est continue et $C^1$ par morceaux alors : 
+					
+				
+				<center>
+				$f_X(x) = F_X^\prime(x)$
+				</center>
+				</div>
+				
+				</section>
+				
+				<section>
+					<h1>Espérance</h1>
+				Dans le cas discret $\mathbb{E}(X) = \sum_{n}x_n \mathbb{P}(X=x_n)$ avec $X\in \{x_1,\dots ,\}$. Dans le cas des v.a.r. ? 
+				
+				<div class="exemple"> 
+					<div id="title">Définition</div>
+					Si $X$ est une v.a.r. telle que $X \geq 0$ ou $\int_{\omega \in \Omega} |X(\omega)|d\mathbb{P}(\omega) < \infty$, on définit <b>l'espérance de $X$</b>, notée $\mathbb{E}(X)$, par : 
+				</p>
+				
+				<center>
+				$\mathbb{E}(X) = \int_{\omega \in \Omega} X(\omega) d\mathbb{P}(\omega)$
+				</center>
+				</div>
+				
+				
+				<p><b>Remarque :</b> $\mathbb{E}(\bold{1}_A) = \int_{\Omega} \bold{1}_A(\omega)d\mathbb{P}(\omega) = \mathbb{P}(A)$  soit pour $A = \{X\in H\} \in \mathcal{B}(\mathbb{R}^d)$ :
+				
+				<center>
+				$\mathbb{E}(\bold{1}_{X\in H}) = \mathbb{P}(X \in H)$
+				</center>
+				</p>
+				
+				En pratique, cette définition n'est pas applicable car nous n'avons pas une formule de $X$ directement ni une expression de $\mathbb{E}(X)$ en fonction de $\mathbb{P}$. 
+				<p>Nous pouvons cependant avoir une expression de $\mathbb{E}(X)$ en fonction de $\mathbb{P}_{X}$, voire de $\mathbb{E}(g(X))$ en fonction de $\mathbb{P}_X$ (et non de $\mathbb{P}_{g(X)}$) </p>
+				</section>
+				
+				<section><h1>Théorème de Transfert</h1>
+				Les deux paragraphes précédents sont des résultats représentées par le théorème de transfert : 
+				
+				<div class="exemple"> 
+					<div id="title">Théorème [de Transfert]</div>
+					Si $X$ est une v.a.r. telle que $X:\Omega \to E$  et  $g: E \to \mathbb{R}$ meusrable telle que $\mathbb{E}(g(X))$ soit bien définie. Alors : 
+				
+				<center>
+				$\mathbb{E}(g(X)) = \int g d\mathbb{P}_X$
+				</center>
+				</div>
+				<p><b>Preuve : </b> Esquisse au tableau. </p>
+				<p><b>Application (Espérance d'une variable à densité) :</b></br>
+					$\rightarrow$ Dans le cas des variables à densité, Soit $X$ de densité $f_X$ p/r à Lebesgue. D'après Exo 14 $\mathbb{P}(X\in H) = \int_{H}f_X(x)dx$. D'après Exo 16, $\int gd\mathbb{P}_X = \int g(x)f_X(x)dx$.
+					Finalement par le théorème de Transfert on a alors :</p> 
+					<center>
+						$\mathbb{E}(g(X)) = \int_{x \in \Omega} g(x) f_X(x) dx$
+						</center>
+				
+					$\rightarrow$ en particulier dans le cas où $g = x$ on a : 
+					<center>
+						$\mathbb{E}(g(X)) = \int_{x \in \Omega} xf_X(x) dx = \text{"barycentre de }f_X \text{"}$
+						</center>
+				</section>
+				
+				<section><h1>Inégalités importantes, variance, moments d'ordre supérieur</h1>
+				Nous listons ici des inégalités classiques. Les démonstrations sont disponibles dans le polycopié : 
+				
+				<div class="exemple"> 
+					<div id="title">Théorème [Inégalités de Markov, de Hölder et de Jensen]</div>
+				On a les inégalités suivantes pour des v.a.r. $X, Y$ : </br>
+					<ol>
+						<li><span style="margin-left:-3em;">$\forall \epsilon >0, p \geq 1 :
+							 \mathbb{P}(|X| > \epsilon) \leq \frac{\mathbb{E}(|X|^p)}{\epsilon^p} \quad\quad\quad\quad\quad\quad\quad~~\texttt{(Markov)}$
+						</span></li>
+				
+						<li><span style="margin-left:-3em;"> $p,q \geq 0, \frac{1}{p} + \frac{1}{q} = 1:
+							 \mathbb{E}(|XY|) \leq \mathbb{E}(|X|^p)^{\frac{1}{p}}\mathbb{E}(|X|^q)^{\frac{1}{q}} \quad \texttt{(Hölder)}$  </span></li>
+						<li><span style="margin-left:-3em;"> $\varphi:\mathbb{R} \to \mathbb{R}$ convexe et $\mathbb{E}(|X|), \mathbb{E}(|\varphi(X)|) < \infty :$ </br>
+							$ \qquad\qquad\qquad\varphi(\mathbb{E}(X) )\leq \mathbb{E}(\varphi(X)) \quad \qquad \qquad \qquad\quad~ \texttt{(Jensen)}$  </span></li>
+					</ol>
+				</div>
+				
+				Les définitions, propriétés et résultats sur les variance covariance et moments d'ordre $p$ sont exactement les mêmes que dans le cas discret (c.f. Poly)
+				</section>
+				
 </div>
 
 <div class='footer'>
