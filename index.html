@@ -1637,7 +1637,281 @@ Deux autres résultats utiles (preuve dans le poly) :
  
 
 </div>
-</section>				
+</section>
+
+<!-- Changement de variables  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VI - Changement de Variables</h2>
+</section>
+
+<section>
+	<h1>Position du problème, Méthode de la fonction muette</h1>
+	Soit $X$ vecteur aléatoire dans $\mathbb{R}^d$  tel que:
+	<ul>
+		<li>$X(\Omega)\subset U \subset \mathbb{R}^d$ où $U$ est un ouvert</li>
+		<li>$X$ admet pour densité $f_X$ par rapport à $\lambda_d$ (mesure de Lebesgue sur $\mathbb{R}^d$)</li>
+		<li>$Y:=\phi(X)$ avec $\phi$ une fonction borélienne sur $\mathbb{R}^d$</li>
+		
+	</ul> 
+
+	<center><b>Question : Comment obtenir, quand-elle existe, la densité $f_Y$ de $Y$ p/r à $\lambda_d$ ?</b></center>
+	Calculons $\mathbb{E}(h(Y)) = \int_{U \subset \mathbb{R}^d} (h\circ \phi)\times f_X d\lambda_d $ avec $h$  positive définie sur $\mathbb{R}^d$. 
+	Supposons que l'on arrive à écrire $\mathbb{E}(h(Y))$ sous la forme $\int_{V \subset \mathbb{R}^d} h\times f_Yd\lambda_d$. Si on pose alors $h=\bold{1}_{H}$ on obtient : 
+	<center>
+	$$
+		\mathbb{E}(\bold{1}_{\{Y \in H\}}) = \mathbb{P}(Y \in H) =  \int_{H \subset \mathbb{R}^d} f_Yd\lambda_d \implies f_Y \text{ densité de } Y \text{ par rapport à } \lambda_d.
+
+	$$
+
+</center>
+$\rightarrow$ Cette procédure s'appelle la <b>méthode de la fonction muette</b>. Elle se résume par : </br>
+<div class="exemple">
+<ol>
+	<li><span style="margin-left:-3em;">Considérer une fonction <b>$h$ positive et définie sur $\mathbb{R}^d$</b></span></li>
+	<li><span style="margin-left:-3em;">écrire $\mathbb{E}(h(Y)) = \int_{U \subset \mathbb{R}^d} (h\circ \phi)\times f_X d\lambda_d = \dots = \int_{V \subset \mathbb{R}^d} h\times f_Yd\lambda_d$</span></li>
+	<li><span style="margin-left:-3em;">La fonction $f_Y$ trouvée précédemment est la densité de $Y$ p/r à $\lambda_d$</span></li>
+</ol>
+</div>
+<p>
+<center>
+	Les $\dots$ dans ii. Sont l'objet du <b>changement de variable</b>.
+</center>
+</p>
+</section>
+
+<section>
+	<h1>Jacobien et Difféomorphisme</h1>
+Rappelons quelques notions d'analyses avec $U,V$ deux ouverts de $\mathbb{R}^d$ et $\phi:U \to V$ telle que $\forall x \in U: \phi(x) = (\phi_1(x),\dots, \phi_d(x))$.
+
+<div class="exemple">
+	<div id="title">Définition [Jacobienne et Jacobien]</div>
+	Pour $\phi$ de classe $\mathcal{C}^1$ (les dérivées partielles existent et sont continues) <b>la jacobienne</b> est définie par :
+	<center>
+		 $\tiny{J_{\phi}(x)=\left(\begin{array}{ccc}
+		\frac{\partial\phi_{1}}{\partial x_{1}}\left(x\right)\\
+		 & \vdots\\
+		\dots & \frac{\partial\phi_{i}}{\partial x_{j}}\left(x\right) & \dots\\
+		 & \vdots\\
+		 &  & \frac{\partial\phi_{d}}{\partial x_{d}}\left(x\right)
+		\end{array}\right)}$
+		
+	</center> 
+	<b>Le jacobien de $\phi$ en $x$</b> est alors $|J_{\phi}|(x)=\det(J_{\phi}(x))$
+	</div>
+<p>$\rightarrow$ $\phi$ bijective, de classe $\mathcal{C}^1$ et d'inverse de classe $\mathcal{C}^1$ est un $\mathcal{C}^1$- difféomorphisme. </br>
+
+$\rightarrow$ De plus :  $\phi$ de classe $\mathcal{C}^1$ est un difféomorphisme $\Leftrightarrow \forall x, |J_{\phi}|(x) \neq 0$  et alors :
+	<center style="margin-top:-0.3em;">
+	$$J_{\phi^{-1}} = \frac{1}{J_\phi \circ \phi^{-1}} \qquad \left( J_{\phi^{-1}}(u) = [J_\phi]^{-1}(x)_{\mid x = \phi^{-1}(u) } \right) \implies |J_{\phi^{-1}}| = \frac{1}{|J_\phi| \circ \phi^{-1}}$$
+</center>
+</p>
+</section>
+<section>
+	<h1>Théorème de changement de variables</h1>
+
+	<div class="exemple">
+		<div id="title">Théorème [Changement de variables]</div>
+        Soit $U,V \subset \mathbb{R}^d$ deux ouverts et $\phi:U\to V$ un difféomorphisme. Pour toute fonction $f$ positive borélienne et définie  sur V,
+		<center>
+			$$
+			\int_{U}f \circ \phi = \int_{V}\frac{f}{||J_{\phi}| \circ \phi^{-1}|}  
+			$$
+		</center>
+		</div>
+	<p><b>Application : </b> pour la méthode de la fonction muette, on a alors : 
+	<center>
+		$$
+		f_Y = \frac{f_X\circ \phi^{-1}}{||J_{\phi}|\circ \phi^{-1}|}\bold{1}_{V} = f_X\circ \phi^{-1}\times |\det(J_{\phi^{-1}})|\bold{1}_{V}
+		$$
+	</center>
+	</p>
+	En particulier on a :
+
+	<div class="exemple">
+		<div id="title">Propriété</div>
+		Si on a un vecteur aléatoire $Y=AX+B$ avec $A$ une matrice inversible et $B$ un vecteur déterministe alors : 
+		<center>
+			$$
+			f_Y(y)=\frac{1}{|\det(A)|}f_X(A^{-1}(y-B))
+			$$
+		</center>
+		</div>
+		<p><b>Preuve :</b> Au tableau</p>
+</section>
+
+<!-- Fonction caractéristique  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VII - Fonction Caractéristique</h2>
+</section>
+
+<section><h1>Motivations et prérequis</h1>
+La fonction caractéristique est un outils très utile en pratique pour :
+<ul>
+	<li>Déterminer la loi de somme de v.a. indépendantes</li>
+	<li>Développer le théorème central limite</li>
+	<li>Calculer des moments de tout ordre ($\mathbb{E}(X^p)$ quand ils existent</li>
+	<li>Développer la théorie autour des vecteurs Gaussiens</li>
+</ul>
+<p>Au préalable, nous définissons les fonctions mesurables à valeur dans $\mathbb{C}$ comme suit : 
+<ul>
+	<li>$f=f_\Re + if_\Im$ à valeurs dans $\mathbb{C}$ est mesurables $\Leftrightarrow f_\Re, f_\Im$ sont mesurables </li>
+	<li>$f$ est intégrable p/r $\mu \Leftrightarrow \int|f|d\mu < \infty $ et alors : 
+		<center>
+			$$
+			\int fd\mu := \int f_\Re d\mu + i \int f_\Im d\mu 
+			$$
+	    </center>
+	</li>
+	<li>Le théorème de convergence dominée reste valable en remplaçant la valeur absolue par le module d'un nombre complexe (linéarité etc.)</li>
+</ul>
+
+
+</p>
+
+
+	Enfin, pour deux vecteurs colonnes $\bold{a},\bold{b} \in \mathbb{R}^d,$ on définit le produit scalaire $<.,.>$ comme suit : 
+	<center style="margin-top:-1.2em;">
+		$$
+		<\bold{a},\bold{b}> = \sum_{k=1}^d a_kb_k = \bold{a}^\top \bold{b}
+		$$
+	</center>
+
+
+</section>
+
+<section>
+	<h1>Définition et premières propriétés</h1>
+	On considère $(\mathbb{R}^d, \mathcal{B}(\mathbb{R}^d), \mu)$ un espace mesurable avec $\mu$ finie ou de probabilité.
+
+	<div class="exemple">
+		<div id="title">Définition [Fonction Caractéristique]</div>
+		La fonction caractéristique de $\mu$ est définie par 
+		<center>
+			$$
+			\forall \bold{t} \in \mathbb{R}^d, \varphi_{\mu}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}d\mu(\bold{x})
+			$$
+		</center>
+		</div>
+	<p><b>Remarque: </br></b>
+		$ \rightarrow \varphi$ est bien définie puisque $\mu$ est finie ou de probabilité et $|e^{i<\bold{t}, \bold{x}>}| = 1$</br>
+		$\rightarrow$ si $\mu$ est de probabilité, $\forall \bold{t} \in \mathbb{R}^d, |\varphi_\mu(t)| \leq \int |e^{i<\bold{t}, \bold{x}>}|d\mu(\bold{x}) = 1$
+	</p>
+
+	On a de plus la propriété suivante : 
+
+	<div class="exemple">
+		<div id="title">Propriété</div>
+		Soit $\mu$ de probabilité. Alors $\varphi_{\mu}$ est continue. 
+		</div>
+	<p><b>Preuve : </b> Au tableau. </p>
+</section>
+<section><h1>Fonction caractéristique d'un vecteur aléatoire</h1>
+Soit $X$ un vecteur aléatoire réel sur $(\Omega, \mathcal{F}, \mathbb{P})$ de dimension $d$ et $\mathbb{P}_{X}$ sa loi. 
+<div class="exemple">
+	<div id="title">Définition</div>
+	La fonction caractéristique d'un vecteur aléatoire réel $X$ noté $\varphi_{X}$ (rarement $\varphi_{\mathbb{P}_X})$ est donnée par 
+	<center>
+		$$
+		\forall \bold{t} \in \mathbb{R}^d, \varphi_{X}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}d\mathbb{P}_{X}(\bold{x}) = \mathbb{E}(e^{i<\bold{t}, X>})
+		$$
+	</center>
+	Si $X$ admet p/r à $\lambda_d$ une densité $f$ pour tout  $\bold{x} = (x_1, \dots, x_d) \in \mathbb{R}^d$. Alors : 
+	<center>
+		$$
+		\forall \bold{t} \in \mathbb{R}^d, \varphi_{X}(\bold{t} ) = \int e^{i<\bold{t}, \bold{x}>}f(x_1,\dots, x_d)dx_1, \dots, dx_d
+		$$
+	</center>
+	</div>
+
+	<p>
+		Ainsi, pour un vecteur aléatoire admettant une densité, $\varphi_X$ peut-être vu comme la transofrmée de Fourier de $f(-x)$.
+	</p>
+
+	<p><b>Exemple</b> : Soit $X:\Omega \to \mathbb{R}^d$ et $Y=AX+\bold{b}, A\in \mathbb{R}^ {m\times d}, \bold{b} \in \mathbb{R}^m$.  Pour $\bold{u} \in \mathbb{R}^m$ : 
+
+		<center>
+
+			$$\begin{aligned}
+			\varphi_{Y}(\bold{u}) &=\mathbb{E}(e^{i<\bold{u}, Y>}) =\mathbb{E}(e^{i<\bold{u}, AX+\bold{b}>}) = \mathbb{E}(e^{i< A^{\top} \bold{u}, X >})e^{i<\bold{u}, \bold{b}>}   \\
+			\end{aligned}	
+			$$
+		</center>
+
+    Soit $\boxed{\varphi_{AX+\bold{b}}(\bold{u}) =\varphi_{X}(A^\top \bold{u})e^{i< \bold{u}, \bold{b}>}}$
+	</p>
+</section>
+
+<section><h1>Caractérisation de la loi</h1>
+On a le théorème suivant (admis) : 
+
+<div class="exemple">
+	<div id="title"> Théorème [Caractérisation de la loi]</div>
+	
+	Soient $\mu,\nu$ deux mesures de probabilités sur $\mathbb{R}^d$. $\varphi_\mu = \varphi_\nu \Leftrightarrow \mu = \nu$
+	</div>
+
+<p>On peut en déduire le corollaire suivant : </p>
+
+<div class="exemple">
+	<div id="title"> Corollaire</div>
+	
+	Soit $X = [X_1, \dots, X_d]^\top$. alors : 
+	<center>
+		$$ X_1 \perp \dots \perp X_d \Leftrightarrow \forall \bold{t} = (t_1, \dots, t_d) \in \mathbb{R}^d, \varphi_X(\bold{t}) = \prod _{i=1}^{d} \varphi_{X_i}(t_i)$$
+	</center>
+	</div>
+	<p><b>Preuve :</b> Au tableau. </br>
+		<b>Exercice : </b> Soit $X \sim \mathcal{N}(0,1)$
+	<ul>
+		<li> $\forall t \in \mathbb{R}$ montrer que $\varphi^\prime_{X}(t) = -t \varphi_X(t)$</li>
+		<li>Résoudre l'équation précédente et en déduire que $\varphi_{X}(t) = e^{-t^2/2}$</li>
+		<li>En remarquant que $Z \sim \mathcal{N}(m, \sigma^2) \Leftrightarrow Z = \sigma X + m$ montrer que 
+			<center>$\varphi_{Z}(t) = e^{itm}e^{-\sigma^2t^2/2}$</li>
+	</ul>
+	</p>
+
+</section>
+<section>
+	<h1>Calculs des moments (1/2)</h1>
+Soit $X: \Omega \to \mathbb{R}^d$ un vecteur aléatoire réel d'ordre $p \in \mathbb{N}^\star$ (i.e. $\mathbb{E}(|X_i|^p) < \infty, \forall i$)
+<div class="exemple">
+<div id="title"> Propriété</div>
+	On a les résultats suivants :</br>	
+    $\rightarrow$ Si $d=1$, alors $\varphi_X$ est de classe $\mathcal{C}^p$ et  la dérivée p-ème $\varphi_X^{(p)}$ de $\varphi_X$ vérifie : 
+	<center>
+		$$ \varphi_X^{(p)}(t) = \mathbb{E}[i^p X^p e^{i <t,X>}]$$
+	</center>
+	En particulier : 
+	<center>
+	$\boxed{\mathbb{E}[X^p] = \frac{\varphi_X^{(p)}(0)}{i^p}}$
+    </center>	
+
+	$\rightarrow$ Si $d>1$, alors pour $X=[X_1, \dots, X_d]^\top, t=[t_1, \dots, t_d]$ et $i_1, \dots i_d \in \llbracket 1,d \rrbracket$ : 
+
+	<center>
+		$$\frac{\partial^p \varphi_X}{\partial t_{i_1} \dots \partial t_{i_p}} (\bold{t}) = \mathbb{E}(i^p X_{i_1} \dots X_{i_p}e^{i <\bold{t}, X>})$$
+		</center>
+
+	En particulier : 
+	<center>
+		$\boxed{\mathbb{E}[X_{i_1} \dots X_{i_p}] = \frac{\frac{\partial^p \varphi_X}{\partial t_{i_1} \dots \partial t_{i_p}} (\bold{0})}{i^p}}$ 
+		</center>	
+
+	
+</div>
+<p><b>Preuve : </b> Rapide esquisse pour $d=p=1$</p>
+</section>
+
+<section>
+	<h1>Calculs des moments (2/2)</h1>
+	<p><b>Application : </b> Soit $X \sim \mathcal{N}(0,1)$</p> Alors: </br>
+	<ul>
+		<li>$\mathbb{E}[X] = \varphi_X^\prime(0)/i =  -0 \times e^{-0^2 /2} /i = 0 $</li>
+		<li>De même on a $\mathbb{E}[X^2] = 1, \mathbb{E}[X^3]=0,\mathbb{E}[X^4]=2$ etc...</li>
+
+	</ul>
+</section>
+
 </div>
 
 <div class='footer'>
