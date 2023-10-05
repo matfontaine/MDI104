@@ -1912,6 +1912,152 @@ Soit $X: \Omega \to \mathbb{R}^d$ un vecteur aléatoire réel d'ordre $p \in \ma
 	</ul>
 </section>
 
+
+<!-- Vecteurs Gaussiens  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>VIII - Vecteurs Gaussiens</h2>
+</section>
+
+
+<section>
+	<h1>Espérance/Covariance d'un vecteur aléatoire (1/2)</h1>
+	On considère $X=(X_1, \dots, X_d):\Omega \to \mathbb{R}^d$ un vecteur aléatoire réel. 
+	<p>Afin de définir les vecteurs Gaussiens, nous allons d'abord définir l'espérance et la covariance d'un vecteur aléatoire : </p>
+
+	<div class="exemple">
+		<div id="title"> Définition [Espérance et covariance]</div>
+			On définit <b> l'espérance d'un vecteur $X$ </b> comme : 
+			<center>
+				$$
+				\mathbb{E}[X] = (\mathbb{E}[X_1], \dots, \mathbb{E}[X_d])^\top
+				$$
+			</center>
+		
+		   <b>La covariance dun vecteur $X$</b> est définie comme la matrice suivante :
+		   <center>
+			$$
+			\mathrm{Cov}(X) = \left(\begin{array}{cccc}
+			\mathrm{Cov}\left(X_{1},X_{1}\right) & \dots & \dots & \mathrm{Cov}\left(X_{1},X_{d}\right)\\
+			\vdots & \vdots & \vdots & \vdots\\
+			\mathrm{Cov}\left(X_{d,}X_{1}\right) & \dots & \dots & \mathrm{Cov}\left(X_{d,}X_{d}\right)
+			\end{array}\right)
+			$$
+		   </center> 	
+		</div>
+<p><b>Remarques : </b>
+<ul>
+	<li>$\mathbb{E}(AX+b) =  A\mathbb{E}(X) + b$</li>
+	<li>$\mathrm{Cov}(X)$ est symétrique ($\mathrm{Cov}(X,Y) = \mathrm{Cov}(Y,X)$)</li>
+	<li>Si $X_1, \dots, X_d$ sont décoréllées alors $\mathrm{Cov}(X)=\mathrm{Diag}(\{\mathrm{Var}(X_i)\}_{i \in \llbracket 1, d\rrbracket})$</li>
+</ul>
+</p>
+
+</section>
+
+<section>
+	<h1>Espérance/Covariance d'un vecteur aléatoire (2/2)</h1>
+	Nous donnons quelques propriétés sur la covariance. $X_c := X - \mathbb{E}(X)$ désigne le vecteur recentré.
+
+	<div class="exemple">
+		<div id="title"> Propriétés</div>
+		On a les résultats suivants  sur la covariance : </br>
+		<ol style="margin-top:0.5em;">
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(X) = \mathbb{E}(X_cX_c^\top)$</span></li>
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(AX+b) = A\mathrm{Cov}(X)A^\top$</span></li>
+			<li><span style="margin-left:-3em;">$\mathrm{Cov}(X)$ est semi-définie positive</span></li>
+			<li><span style="margin-left:-3em;">$X \perp Y \implies \mathrm{Cov}(X+Y) = \mathrm{Cov}(X) + \mathrm{Cov}(Y)$ </span></li>
+		</ol>	
+		</div>
+		<p><b>Preuve:</b> Au tableau.</p>
+</section>
+<section>
+<h1>Vecteur Gaussien : Définition et Premières Propriétés</h1>	
+<p><b>Rappel : </b>
+La loi gaussienne $\mathcal{N}(m, \sigma^2)$ admet pour densité $f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-m)^2}{2\sigma^2}}$ et fonction caractéristique $\varphi (t) = e^{itm}e^{-\frac{\sigma^2t^2}{2}}$.
+</p>
+
+<div class="exemple">
+	<div id="title"> Définition [vecteur gaussien]</div>
+	On  dit que $X:\Omega \to \mathbb{R}^d$ est un <b>vecteur gaussien</b> (VG) si $\forall \bold{a} \in \mathbb{R}^d, <\bold{a}, X>$ suit une loi gaussienne. 	
+	</div>
+
+<p>	On a alors les propriétés suivantes :</p>
+
+<div class="exemple">
+	<div id="title"> Définition [vecteur gaussien]</div>
+	On a les résultats suivants  pour $X=(X_1, \dots, X_d)$ une VG : </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$\forall k \in \llbracket 1,d \rrbracket, X_k$ est une variable gaussienne</span></li>
+		<li><span style="margin-left:-3em;">Tout sous vecteur $(X_{i_1}, \dots, X_{i_m})$ est gaussien</span></li>
+	</ol>		
+	</div>
+<p><b>Preuve : </b> Au tableau.</p>
+</section>
+<section><h1>Fonction Caractéristique et Indépendance</h1>
+La propriété suivante nous permet de caractériser les vecteur Gaussiens.
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Les assertions suivantes sont équivalentes :  </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$X$ est un VG d'espérance $\bold{m}\in \mathbb{R}^d$ et de covariance $\mathrm{Cov}(X) = \Sigma \in \mathbb{R}^{d\times d}$</span></li>
+		<li><span style="margin-left:-3em;">$\forall t \in \mathbb{R}^d, \varphi_{X}(\bold{t}) = e^{i<\bold{t},\bold{m}>}e^{\frac{-\bold{t}^\top\Sigma\bold{t}}{2}}$</span></li>
+	</ol>
+<p>On écrira alors $X \sim \mathcal{N}_{d}(\bold{m}, \Gamma)$</p>
+	</div>
+
+<p><b>Preuve : </b> Au tableau.</p>
+
+On a alors le résultat suivant sur l'indépendance de variables gaussiennes : 
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Les assertions suivantes sont équivalentes avec $\forall k \in \llbracket 1, d\rrbracket, X_k \sim \mathcal{N}(m_k,\sigma_k^2)$ :  </br>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">$X_1 \perp \dots \perp X_d$ et sont des variables gaussiennes</span></li>
+		<li><span style="margin-left:-3em;">$X=(X_1,\dots,X_d) \sim \mathcal{N}_{d}\left(\bold{m},\mathrm{Diag}[\{\sigma_k\}_{k \in \llbracket 1, d \rrbracket}]\right)$
+         avec $\bold{m}=(m_1, \dots,m_d)^\top$
+
+		</span></li>
+	</ol>
+
+	<p><b>Preuve : </b> Au tableau.</p>
+	</div>
+
+</section>
+
+<section><h1>Transformation Affine</h1>
+	<div class="exemple">
+		<div id="title"> Théorème</div>
+		
+		Si $X \sim \mathcal{N}_d (\bold{m}, \Sigma)$ alors $AX+\bold{b} \sim \mathcal{N}_d(A\bold{m} + \bold{b}, A\Sigma A^\top)$
+	
+
+		</div>
+		<p><b>Preuve : </b> Au tableau.</p>
+	<p><b>Exemple :</b> Exercice 41</p>
+</section>
+<section>
+<h1>Densité d'un vecteur Gaussien</h1>
+On a le résultat suivant : 
+
+<div class="exemple">
+	<div id="title"> Propriété</div>
+	Si $X\sim\mathcal{N}_{d}(\bold{m},\Sigma)$ avec $\Sigma$ définie positive (et donc $\Sigma$ inversible). Alors, $X$  admet pour densité :  </br>
+	<center>
+		$$
+		f_X(\bold{x}) = \frac{1}{\sqrt{(2\pi)^d \det \Sigma}}\exp\left(-\frac{1}{2}(\bold{x}-\bold{m})^\top\Sigma^{-1}(\bold{x}-\bold{m})\right)
+		$$
+	</center>
+
+	</div>
+
+	<p><b>Preuve : </b> Au tableau.</p>
+
+	<p><b>Remarque : </b> Si $\Sigma$ n'est pas inversible, alors $X$ n'admet pas de densité p/r à $\lambda_d$.</p>
+</section>
+
+
 </div>
 
 <div class='footer'>
