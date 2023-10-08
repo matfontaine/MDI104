@@ -2058,6 +2058,231 @@ On a le résultat suivant :
 </section>
 
 
+<!-- Probabilité et espérance conditionnelle  -->
+<section class="cover" data-background="figures/background.png" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>IX - Probabilité et Espérance Conditionnelle</h2>
+</section>
+
+<section>
+<h1>Motivations et théorème de Radon-Nikodym</h1>
+$\mathbb{P}_{Y \mid X=x} (G) \overset{\text{def}}{=} \mathbb{P}(Y\in G \mid X=x) \overset{?}{=} \frac{\mathbb{P}(Y\in G, X=x)}{\mathbb{P}(X=x)}$
+<p><b>Problème :</b> $\mathbb{P}(X=x)=0$ pour une variable à densité donc pas de sens. </br>
+Intuitivement, on aimerait écrire $\mathbb{P}_{X,Y} (H \times G) = \int_H f_{Y \mid X=x}(G)d\mathbb{P}_X(x)$. 
+C'est à dire que $\mathbb{P}_{X,Y} $ admette une densité par rapport à $\mathbb{P}_X$.
+Un théorème fondamental en théorie de la mesure va nous permettre de construire une telle densité :
+
+<p></p>
+
+<div class="exemple">
+	<div id="title"> Théorème [Radon-Nikodym]</div>
+	Soient $\mu$ et $\nu$ deux mesures $\sigma$-finies sur $(F, \mathcal{F})$. Alors : </br>
+
+	$\mu$ admet une densité p/r à  $\nu \Leftrightarrow (\forall A \in \mathcal{F}, \mu_{A} = 0 \implies \nu_{A}=0)$ est vérifiée. 
+	</div>
+<p><b>Remarque :</b> La propriété $(\forall A \in \mathcal{F}, \mu_{A} = 0 \implies \nu_{A}=0)$ se dit aussi "$\mu$ est absolument continue p/r à $\nu$" et on note $"\mu \ll \nu"$</p>
+</section>
+
+<section><h1>Probabilité conditionnelle</h1>
+	On considère :
+	
+	<ul>
+		<li>$(\Omega, \mathcal{F}, \mathbb{P})$ un espace de probabilité, $(E, \mathcal{E}), (F, \mathcal{G})$ des espaces mesurables</li>
+		<li>$X:\Omega \to E, Y:\Omega \to F$ deux v.a.</li>
+	 <li> $\mathbb{P}_{X,Y}, \mathbb{P}_{X}, \mathbb{P}_{Y}$ la loi jointe et ses marginales respectivement </li>
+	
+	</ul></br>
+	 Le théorème précédent entraîne directement que $H \mapsto \mathbb{P}_{(X,Y)}(H \times G)$ est absolument continue par rapport à la mesure $\mathbb{P}_X$. D'où la définition suivante : 
+
+<div class="exemple">
+	<div id="title"> Définition [Probabilité conditionnelle]</div>
+	$\forall G \in \mathcal{G}, \mathbb{P}_{Y \mid X=x}(G)$ est la fonction de $x$, définie de manière unique $\mathbb{P}_X$- p.p., telle que
+
+	<center>
+		$$
+\forall H \in \mathcal{E}, \mathbb{P}_{X,Y}(H \times G) = \int_H \mathbb{P}_{Y \mid X=x}(G)d\mathbb{P}_{X}(x)
+		$$
+	</center>
+	On appelle $G \mapsto \mathbb{P}_{Y \mid X=x}(G)$ <b>la loi conditionnelle de $Y$ sachant $X=x$</b>.
+	</div>
+</section>
+
+<section>
+<h1>Propriétés</h1>
+On a les résultats suivants : 
+<div class="exemple">
+	<div id="title"> Propriétés</div>
+	<ol style="margin-top:0.5em;">
+		<li><span style="margin-left:-3em;">Si $X \perp Y$ alors $\mathbb{P}_{Y \mid X=x} = \mathbb{P}_Y$</span></li>
+		<li><span style="margin-left:-3em;">Si $Y=f(X)$ alors  pour toute application $f$ mesurable $\mathbb{P}_{Y \mid X=x} = \delta_{f(x)}$ 
+
+		</span></li>
+	</ol>
+	</div>
+	<p><b>Preuve :</b> Au tableau .</p>
+</section>
+
+<section><h1>Vecteurs aléatoires à densité</h1>
+On suppose que : </br>
+<ul>
+	<li>$(X,Y)$ admet une densité $f_{X,Y}(x,y)$ p/r à $\mu \otimes \nu$</li>
+	<li>$\mu,\nu$ sont respectivement des mesures de réferences sur $E$ et $F$</li>
+	<li>$X$ admet une densité $f_{X}$ p/r à $\mu$</li>
+	<li>$d\mathbb{P}_{X,Y}(x,y) = f_{X,Y}(x,y)d\mu(x)d\nu(y)$</li>
+</ul> </br>
+On définit la densité conditionnelle comme suit  
+<div class="exemple">
+	<div id="title"> Définition [Densité conditionnelle]</div>
+	La densité conditionnelle de $Y$ sachant $X=x$ est ($\forall y$ et  $\forall x~ \mathbb{P}_X$- p.p. :) : 
+
+	<center>
+		$f_{Y \mid X=x}(y) = \frac{f_{X,Y}(x,y)}{f_X(x)}$
+	</center>
+	</div>
+On a alors la relation suivante entre la loi conditionnelle et la densité de probabilité : 
+<div class="exemple">
+	<div id="title"> Théorème</div>
+
+
+	<center>
+		$\forall G \in \mathcal{G}, \forall x ~ \mathbb{P}_X$-p.p., $\mathbb{P}_{Y \mid X =x} (G) = \int_{G} f_{Y \mid X =x}(y) d\nu(y)$
+	</center>
+	</div>
+	<p><b>Preuve : </b> Au tableau.</p>
+</section>
+
+<section>
+	<h1>Exemple avec des variables aléatoires discrètes</h1>
+On pose : 
+<ul>
+	<li>$(X,Y)$ vecteur aléatoire discret à valeurs dans $\mathbb{N}^2$</li>
+	<li>$(X,Y)$ admet une densité $f_{X,Y}(x,y)$ p/r à $\mu \otimes \nu = \sum_{(x,y) \in \mathbb{N}^2}\delta(x,y)$</br>
+		$\quad \rightarrow$ on sait d'ailleurs que $f_{X,Y}(x,y) = \mathbb{P}(X=x, Y=y)$
+
+	</li>
+	<li>$X$ admet une densité $f_{X}(x)$ p/r à $\mu = \sum_x \delta_{x}$ avec $f_X(x) = \mathbb{P}(X=x)$</li>
+ Par conséquent on a :
+<center>
+	$$
+	f_{Y\mid X=x}(y) = \frac{f_{X,Y}(x,y)}{f_X(x)} = \frac{\mathbb{P}(X=x, Y=y)}{\mathbb{P}(X=x)} := \mathbb{P}(Y=y \mid X=x)
+	$$
+</center>
+</ul> </br>
+</section>
+
+<section>
+<h1>Exemple mixte : formule de Bayes (1/2)</h1>
+On suppose: 
+<ul>
+	<li>$X \sim \beta(a,b)$ une loi beta de densité $f_X(x) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}\bold{1}_{[0,1]}(x)$</li>
+	<li>$Y$ une variable aléatoire discrète sur $\{0,1\}$</li>
+	<li>On suppose que $\mathbb{P}_{Y\mid X=x} = x \delta_{1} + (1-x)\delta_0$ pour $x \in [0,1]$</li>
+</ul>
+Si on analyse, $Y\mid X=x$ revient à prendre $x$ issue d'une loi beta sur $[0,1]$ et de tirer une Bernoulli avec probabilité $x$ de succès. 
+
+Soit $Y\mid X=x \sim \mathcal{B}(x)$.
+
+<p><b>Quelle est la loi de $X \mid Y=y$ ?</b></br>
+<ul>
+	<li>$(X,Y)$ admet une densité $f_{X,Y}(x,y)$ p/r à $(\mu=\lambda) \otimes (\nu = \delta_0 + \delta_1)$</li>
+	<li>$f_X(x)f_{Y \mid X=x}(y) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}\bold{1}_{[0,1]}(x) x^{y}(1-x)^{1-y} = f_{X,Y}(x,y)$</li>
+	<li>Donc : $f_{X \mid Y=y}(x) = \frac{f_{X,Y}(x,y)}{f_Y(y)}= \underbrace{\frac{\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}}{\int f_{X,Y}(x,y)dy}}_{:=C_y}x^{a-1+y}(1-x)^{b-y} \bold{1}_{[0,1]}(x) =C_y x^{a-1+y}(1-x)^{b-y} \bold{1}_{[0,1]}(x)$ </li>
+
+</ul>
+
+
+</p>
+
+</section>
+<section>
+	<h1>Exemple mixte : formule de Bayes (2/2)</h1>
+	Pour que $\int f_{X \mid Y=y}(x)dx = 1$, il faut que $C_y = \frac{\Gamma(a+b+1)}{\Gamma(a+y)\Gamma(b+1-y)}$
+<p>
+	<b>Conclusion : </b> $X\mid Y=y \sim \beta(a+y, b+1-y)$
+</p>
+
+<p>
+	<b>Remarque : </b> On avait $f_{Y\mid X=x}$ et on voulait $f_{X|Y=y}$. La formule employé s'appelle <b>la formule de Bayes : </b>
+
+	<center>
+		$$
+		\boxed{f_{X \mid Y=y}(x) = \frac{f_{Y\mid X=x}(y)f_X(x)}{f_Y(y)}}
+		$$
+	</center>
+</p>
+</section>
+
+<section>
+	<h1>Espérance conditionnelle</h1>
+Soit $X$ une v.a. et $Y$ une v.a.r.  telle que $Y \geq 0$ ou $\mathbb{E}(|Y|) < \infty$. 
+
+<div class="exemple">
+	<div id="title"> Définition [Espérance conditionnelle]</div>
+	$x \mapsto \mathbb{E}(Y \mid X=x)$ est l'unique ($\mathbb{P}_X$ - pp) fonction mesurable telle que :
+
+	<center>
+		$\forall H \in \mathcal{E}, \mathbb{E}(Y\bold{1}_{H}(X)) = \int_{H} \mathbb{E}(Y \mid X=x)d\mathbb{P}_X(x)$
+	</center>
+	</div>
+<p><b>Preuve:</b> cf. Poly (Radon-Nikodym sur la mesure $H \to \mathbb{E}(Y\bold{1}_{H}) $)</p>
+
+<p>Remarque : si on prend $\bold{1}_{H} = 1$ alors on obtient $\boxed{\mathbb{E}(Y) = \int \mathbb{E}(Y \mid X=x)d\mathbb{P}_X(x)}$</p>
+
+
+	
+
+</section>
+
+<section>
+	<h1>Théorème de transfert généralisé et corollaires</h1>
+
+	On peut alors montrer que (cf. poly pour les preuves) :
+<div class="exemple">
+	<div id="title"> Théorème et corollaires [de transfert généralisé]</div>
+	$\rightarrow \forall \psi(x,y)$ mesurable tq $\mathbb{E}|\psi(x,y)| < \infty$ on a :
+
+
+	<center>
+		$$
+		\mathbb{E}(\psi(X,Y) \mid X=x) = \int \psi(x,y)d\mathbb{P}_{Y \mid X=x}(y) \quad \texttt{(Théorème de transfert)}
+		$$
+	</center>
+	$\rightarrow $ En particulier pour $\psi(x,y) = y$ on a : 
+
+	<center>
+		$$
+		\mathbb{E}(Y \mid X=x) = \int yd\mathbb{P}_{Y \mid X=x}(y)
+		$$
+	</center>
+
+	$\rightarrow$ Dans le cas où $(X,Y)$ de densité $f_{X,Y}$ p/r à $\mu \otimes \nu$ : 
+
+
+<center>
+	$$
+	\mathbb{E}(\psi(X,Y) \mid X=x) = \int \psi(x,y)f_{Y \mid X=x}(y)d\nu(y)
+	$$
+</center>
+
+$\rightarrow$ Si $g$ mesurable et $\mathbb{E}|g(X)Y| < \infty$ alors : 
+
+<center>
+	$$
+	\mathbb{E}(\psi(X,Y) \mid X=x) = \int \psi(x,y)f_{Y \mid X=x}(y)d\nu(y)
+	$$
+</center>
+
+Si $X\perp Y$ alors : 
+
+<center>
+	$$
+	\mathbb{E}(Y \mid X=x) = \mathbb{E}(Y)
+	$$
+</center>
+</div>
+	
+</section>
+
+
 </div>
 
 <div class='footer'>
