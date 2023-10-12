@@ -2003,7 +2003,7 @@ La propriété suivante nous permet de caractériser les vecteur Gaussiens.
 		<li><span style="margin-left:-3em;">$X$ est un VG d'espérance $\bold{m}\in \mathbb{R}^d$ et de covariance $\mathrm{Cov}(X) = \Sigma \in \mathbb{R}^{d\times d}$</span></li>
 		<li><span style="margin-left:-3em;">$\forall t \in \mathbb{R}^d, \varphi_{X}(\bold{t}) = e^{i<\bold{t},\bold{m}>}e^{\frac{-\bold{t}^\top\Sigma\bold{t}}{2}}$</span></li>
 	</ol>
-<p>On écrira alors $X \sim \mathcal{N}_{d}(\bold{m}, \Gamma)$</p>
+<p>On écrira alors $X \sim \mathcal{N}_{d}(\bold{m}, \Sigma)$</p>
 	</div>
 
 <p><b>Preuve : </b> Au tableau.</p>
@@ -2015,7 +2015,7 @@ On a alors le résultat suivant sur l'indépendance de variables gaussiennes :
 	Les assertions suivantes sont équivalentes avec $\forall k \in \llbracket 1, d\rrbracket, X_k \sim \mathcal{N}(m_k,\sigma_k^2)$ :  </br>
 	<ol style="margin-top:0.5em;">
 		<li><span style="margin-left:-3em;">$X_1 \perp \dots \perp X_d$ et sont des variables gaussiennes</span></li>
-		<li><span style="margin-left:-3em;">$X=(X_1,\dots,X_d) \sim \mathcal{N}_{d}\left(\bold{m},\mathrm{Diag}[\{\sigma_k\}_{k \in \llbracket 1, d \rrbracket}]\right)$
+		<li><span style="margin-left:-3em;">$X=(X_1,\dots,X_d) \sim \mathcal{N}_{d}\left(\bold{m},\mathrm{Diag}[\{\sigma_k^2\}_{k \in \llbracket 1, d \rrbracket}]\right)$
          avec $\bold{m}=(m_1, \dots,m_d)^\top$
 
 		</span></li>
